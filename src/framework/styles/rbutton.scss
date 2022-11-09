@@ -1,0 +1,7 @@
+.n-button {
+  background-color: $primary-color;
+  // hover
+  &:hover {
+    background-color: $primary-color-hover;
+  }
+}
