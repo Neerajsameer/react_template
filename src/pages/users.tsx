@@ -25,8 +25,8 @@ export default function Users() {
         { title: 'Email', dataIndex: 'email', key: 'email', },
         { title: 'Phone Number', dataIndex: 'phone_number', key: 'phone_number', },
         { title: 'User Type', dataIndex: 'm_user_type_id', key: 'm_user_type_id', render: (value: any) => <>{masterData.m_user_types[value]}</> },
-        { title: 'Designation', dataIndex: 'designation', key: 'designation', render: (value: any) => <>{masterData.m_designation[value]}</> },
-        { title: 'Department', dataIndex: 'department', key: 'department', render: (value: any) => <>{masterData.m_department[value]}</> },
+        { title: 'Designation', dataIndex: 'm_designation_id', key: 'm_designation_id', render: (value: any) => <>{masterData.m_designation[value]}</> },
+        { title: 'Department', dataIndex: 'm_department_id', key: 'm_department_id', render: (value: any) => <>{masterData.m_department[value]}</> },
         { title: 'Created At', dataIndex: 'added_on', key: 'added_on', render: (value, record) => { return <span>{moment(value).format("DD MMM yyyy, hh:mm A")}</span> } },
     ];
 

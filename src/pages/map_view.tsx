@@ -9,15 +9,29 @@ import NLayout from '../components/layout';
 import { MapFiltersDrawer } from '../components/maps_filter_drawer';
 import { API_URLS } from '../constants/api_urls';
 import { useAppDispatch, useAppSelector } from '../store';
-import { getMapData, setExtraDetails, setShowFilters } from '../store/reducers/map_view.reducer';
+import { getMapData, setExtraDetails, setMapFilters, setShowFilters } from '../store/reducers/map_view.reducer';
 import { Request } from '../utils/functions.utils';
 
 export default function MapView() {
 
     const dispatch = useAppDispatch();
     const mapData = useAppSelector((state) => state.map_view);
+    const masterData = useAppSelector((state) => state.auth.master_data);
 
-    useEffect(() => { dispatch(getMapData()) }, [mapData.filters]);
+    useEffect(() => {
+
+        dispatch(getMapData())
+    }, [mapData.filters]);
+
+    useEffect(() => {
+        if (mapData.filters.appreciation_types?.length == 0 && mapData.filters.complaint_types?.length == 0) {
+            dispatch(setMapFilters({
+                appreciation_types: masterData.m_good_road_type_list.map((item, i) => i.toString()),
+                complaint_types: masterData.m_bad_road_type_list.map((item, i) => i.toString()),
+                field_survey: true
+            }));
+        }
+    }, [])
 
     return (
         <>
