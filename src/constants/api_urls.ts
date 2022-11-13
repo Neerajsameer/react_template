@@ -4,11 +4,12 @@ export const API_URLS = {
   USERS: {
     GET_USERS: "/department/users",
     CREATE_USER: "/department/signup",
-    DELETE_USER: "/department/users",
+    DELETE_USER: (id: number) => `/department/users/${id}`,
+    UPDATE_USER: (id: number) => `/department/users/${id}`,
   },
   DATA: {
     feedbacks: "/feedback_data",
-    field_survey: "/department/survey_data",
+    field_survey: "/survey_data",
     master_data: "/master_data",
     map_data: "/map_data",
     dashboard_data: "/dashboard_data",

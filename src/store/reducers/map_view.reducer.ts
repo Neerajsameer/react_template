@@ -37,8 +37,8 @@ const mapInitialData: MapData = {
   data: [],
   loading: false,
   filters: {
-    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : new Date(),
-    to_date: localFeedbackFilters.to_date ? new Date(localFeedbackFilters.to_date) : new Date(),
+    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : null,
+    to_date: localFeedbackFilters.to_date ? new Date(localFeedbackFilters.to_date) : null,
     complaint_types: localFeedbackFilters.complaint_types ?? [],
     appreciation_types: localFeedbackFilters.appreciation_types,
     field_survey: true,
@@ -98,7 +98,6 @@ export const getMapData = () => {
       const formattedData = data.filter((item) => item.latitude !== null && item.longitude !== null && item.type);
       dispatch(setMapData(formattedData));
     } catch (e: any) {
-      console.error({ e });
       showNotification({ title: "Error", message: e, color: "red" });
     } finally {
       dispatch(setLoading(false));

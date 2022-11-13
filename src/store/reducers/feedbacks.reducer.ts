@@ -90,7 +90,6 @@ export const getFeedbacks = () => {
 
       dispatch(setFeedbacks(formattedData));
     } catch (e: any) {
-      console.log({ e });
       showNotification({ title: "Error", message: e, color: "red" });
     } finally {
       dispatch(setLoading(false));

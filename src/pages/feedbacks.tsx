@@ -24,9 +24,9 @@ export default function FeedBackPage() {
 
 
   const columns: ColumnType<any>[] = [
-    { title: 'S No', dataIndex: 's_no', key: 's_no', width: '60px', align: 'center' },
-    { title: 'Feedback ID', dataIndex: 's_feedback_id', key: 's_feedback_id', width: '140px', align: 'center' },
-    { title: 'User Name', dataIndex: 'added_by', key: 'added_by', },
+    { fixed: true, title: 'S No', dataIndex: 's_no', key: 's_no', width: '60px', align: 'center' },
+    { fixed: true, title: 'Feedback ID', dataIndex: 's_feedback_id', key: 's_feedback_id', width: '140px', align: 'center' },
+    { fixed: true, title: 'User Name', dataIndex: 'added_by', key: 'added_by', },
     { title: 'Created At', dataIndex: 'added_on', key: 'added_on', render: (value, record) => { return <span>{moment(value).format("DD MMM yyyy, hh:mm A")}</span> } },
     { title: 'Feedback Type', dataIndex: 'feedback_type', key: 'feedback_type', render: (value, record) => { return <NBadge title={value == 1 ? "Complaint" : "Appreciation"} /> } },
     { title: 'Feedback', dataIndex: 'feedback', key: 'feedback', render: (value, record) => { return <span>{value == "Others" ? record.m_feedback_other : value}</span> } },
@@ -69,7 +69,6 @@ export default function FeedBackPage() {
             label="Feedback Type"
             name="feedback_type"
             onChange={(value) => {
-              console.log(value);
               dispatch(setFeedbackFilters({ feedback_type: value }))
             }}
             value={(feedbackData.filters.feedback_type ?? 0)?.toString() as any}

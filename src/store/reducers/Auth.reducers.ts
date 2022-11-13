@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import store from "..";
 import { API_URLS } from "../../constants/api_urls";
-import { MasterData, SessionKeys } from "../../constants/types";
+import { MasterData } from "../../constants/types";
 import { Request, SessionData } from "../../utils/functions.utils";
 
-const user = SessionData.get(SessionKeys.USER);
+const user = SessionData.get("user");
 const localMasterData = SessionData.get("master_data");
 
 type initialStateType = {
@@ -32,14 +33,12 @@ export const AuthReducer = createSlice({
   reducers: {
     login: (state, action: PayloadAction<initialStateType["data"]>) => {
       state.data = action.payload;
-      SessionData.set(SessionKeys.USER, JSON.stringify(action.payload));
+      SessionData.set("user", JSON.stringify(action.payload));
     },
     logout: (state) => {
       state.isLoggedIn = false;
       state.data = null;
-      SessionData.clear(SessionKeys.USER);
-      window.location.href = "/login";
-      console.log("Done");
+      SessionData.clearAll();
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -60,13 +59,27 @@ export const loginReqAuthentication = (email: string, password: string) => {
     try {
       if (!email || !password) throw "Please enter email and password";
       const response = await Request.post({ url: API_URLS.LOGIN, data: { email, password } });
-      const masterData = (await Request.get({ url: API_URLS.DATA.master_data })) as MasterData;
-      dispatch(setMasterData(masterData));
+
       dispatch(login(response));
       return response;
     } catch (e) {
-      console.log({ e });
+      throw e;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+};
 
+export const getMasterData = () => {
+  return async (dispatch: any) => {
+    dispatch(setLoading(true));
+    if (store.getState().auth.master_data) return;
+
+    try {
+      const response = await Request.get({ url: API_URLS.DATA.master_data });
+      dispatch(setMasterData(response));
+      return response;
+    } catch (e) {
       throw e;
     } finally {
       dispatch(setLoading(false));

@@ -41,7 +41,6 @@ export const getDashboardData = () => {
       dispatch(setDashboardData(response));
       return response;
     } catch (e) {
-      console.log({ e });
       throw e;
     } finally {
       dispatch(setLoading(false));

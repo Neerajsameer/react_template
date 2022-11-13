@@ -1,12 +1,16 @@
 import axios, { Axios, AxiosError, AxiosRequestConfig } from "axios";
 import _ from "lodash";
 import { API_URLS } from "../constants/api_urls";
+import store from "../store";
+
+type local_keys = "user" | "master_data" | "map_filters" | "feedback_filters" | "field_survey_filters";
 
 export const SessionData = {
-  set: (key: string, data: any) => localStorage.setItem(key, data),
-  get: (key: string) => localStorage.getItem(key),
-  has: (key: string) => localStorage.hasOwnProperty(key),
-  clear: (key: string) => localStorage.removeItem(key),
+  set: (key: local_keys, data: any) => localStorage.setItem(key, data),
+  get: (key: local_keys) => localStorage.getItem(key),
+  has: (key: local_keys) => localStorage.hasOwnProperty(key),
+  clear: (key: local_keys) => localStorage.removeItem(key),
+  clearAll: () => localStorage.clear(),
 };
 
 type RequestParams = { url: string; data?: Record<string, any>; params?: Record<string, any>; headers?: Record<string, any> };
@@ -20,8 +24,14 @@ export const Request = {
 
 async function makeApiCall(axiosConfig: AxiosRequestConfig) {
   try {
-    const response = await axios({ ...axiosConfig, url: API_URLS.BASE_URL + axiosConfig.url });
-    console.log({ res: response.data });
+    const response = await axios({
+      ...axiosConfig,
+      url: API_URLS.BASE_URL + axiosConfig.url,
+      headers: {
+        ...(axiosConfig.headers ?? {}),
+        Authorization: "Bearer " + store.getState().auth.data?.access_token,
+      },
+    });
     return response.data?.["meta"]?.["data"];
   } catch (e: any) {
     const error = e as AxiosError;

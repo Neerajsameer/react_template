@@ -55,13 +55,10 @@ export default function Login() {
                                     loading={auth.loading}
                                     onClick={async () => {
                                         try {
-                                            console.log("Making API Call");
                                             await dispatch(loginReqAuthentication(loginForm.email, loginForm.password))
                                             window.location.replace("/");
                                         } catch (e: any) {
-                                            console.log({ e })
                                             showNotification({ message: e, title: "Error", color: "red" });
-                                            console.log("Shown")
                                         }
                                     }}
                                 />

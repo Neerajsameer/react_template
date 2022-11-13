@@ -44,16 +44,7 @@ export function MapFiltersDrawer() {
                         }}
                     />
                 </Group>
-                <Divider my={20} />
-                <Checkbox
-                    key={"field_survey"}
-                    label={"Field Survey"}
-                    value={"field_survey"}
-                    checked={mapData.filters.field_survey}
-                    onChange={(e) => {
-                        dispatch(setMapFilters({ field_survey: e.currentTarget.checked }))
-                    }}
-                />
+
                 <Divider my={20} />
                 <Checkbox.Group
                     label="Complaint Types"
@@ -62,7 +53,6 @@ export function MapFiltersDrawer() {
                     size='sm'
                     value={mapData.filters.complaint_types}
                     onChange={(values) => {
-                        console.log({ values })
                         dispatch(setMapFilters({ complaint_types: values }))
                     }}
                     styles={{ label: { fontWeight: 700, fontSize: 16 } }}
@@ -93,6 +83,16 @@ export function MapFiltersDrawer() {
                         })
                     }
                 </Checkbox.Group>
+                <Divider my={20} />
+                <Checkbox
+                    key={"field_survey"}
+                    label={"Field Survey"}
+                    value={"field_survey"}
+                    checked={mapData.filters.field_survey}
+                    onChange={(e) => {
+                        dispatch(setMapFilters({ field_survey: e.currentTarget.checked }))
+                    }}
+                />
                 <Space h={50} />
             </ScrollArea>
         </Drawer>

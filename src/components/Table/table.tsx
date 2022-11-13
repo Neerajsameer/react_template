@@ -58,7 +58,6 @@ export default function NTable({
         setPagination(pagination);
     };
 
-    console.log("data", data);
 
     return (
         <>
@@ -76,7 +75,7 @@ export default function NTable({
                 columns={columns} //filtering columns which includes only changed values array
                 dataSource={data}
                 pagination={{
-                    pageSize: 1000, //pagination?.pageSize ?? ,
+                    pageSize: pagination?.pageSize ?? 10,
                     current: pagination?.current ?? 1,
                     total: pagination?.total ?? 0,
                     style: { padding: "24px" },

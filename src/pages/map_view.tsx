@@ -1,9 +1,11 @@
 import { Divider, Group, Text } from '@mantine/core';
 import { IconFilter } from '@tabler/icons';
-import { divIcon } from 'leaflet';
+import { divIcon, geoJSON } from 'leaflet';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
+import districtsJson  from '../assets/geojson/districts.json';
+import indiaJson  from '../assets/geojson/india.json';
 import { markerSVG } from '../components/icons';
 import NLayout from '../components/layout';
 import { MapFiltersDrawer } from '../components/maps_filter_drawer';
@@ -11,15 +13,18 @@ import { API_URLS } from '../constants/api_urls';
 import { useAppDispatch, useAppSelector } from '../store';
 import { getMapData, setExtraDetails, setMapFilters, setShowFilters } from '../store/reducers/map_view.reducer';
 import { Request } from '../utils/functions.utils';
+import {feature} from 'topojson-client';
 
 export default function MapView() {
+
+    const x : GeoJSON.BBox = [72.4, 6.7, 97.4, 35.5];
 
     const dispatch = useAppDispatch();
     const mapData = useAppSelector((state) => state.map_view);
     const masterData = useAppSelector((state) => state.auth.master_data);
 
     useEffect(() => {
-
+        if (!mapData.filters.from_date || !mapData.filters.to_date) dispatch(setShowFilters(true))
         dispatch(getMapData())
     }, [mapData.filters]);
 
@@ -33,6 +38,9 @@ export default function MapView() {
         }
     }, [])
 
+    const districtGeoData = feature(districtsJson as any, {type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => x.properties.m_state_id == 33)});
+    const indiaGeoData = feature(indiaJson as any,  (indiaJson as any).objects["India"]);
+
     return (
         <>
             <NLayout title='Map View'>
@@ -45,12 +53,14 @@ export default function MapView() {
                 <Group position='right'>
                     <IconFilter onClick={() => { dispatch(setShowFilters(true)) }} />
                 </Group>
-                <MapContainer center={[12.937852, 77.630103]} zoom={12} minZoom={2} maxZoom={20} scrollWheelZoom={true} style={{ height: "calc(100vh - 120px)", zIndex: 1 }}>
+                         <MapContainer center={[21.146633, 79.088860]} zoom={6} minZoom={2} maxZoom={20} scrollWheelZoom={true} style={{ height: "calc(100vh - 120px)", zIndex: 1 }}>
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                         subdomains="abcd"
                     />
+                    {/* Show a GeoJson here */}
+                   <GeoJSON data={indiaGeoData} style={{color: "#F8E2B1", weight: 1,dashOffset: "1.5"}}/>
                     {/* <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -95,7 +105,6 @@ function FeedbackPopUp({ id }: { id: number }) {
             setData(res);
             setLoading(false);
         }).catch((err) => {
-            console.log(err);
         })
 
     }, [])
@@ -131,7 +140,6 @@ function SurveyPopUp({ id }: { id: number }) {
             setData(res);
             setLoading(false);
         }).catch((err) => {
-            console.log(err);
         })
 
     }, [])
@@ -175,3 +183,4 @@ function SurveyPopUp({ id }: { id: number }) {
         </Popup>
     )
 }
+

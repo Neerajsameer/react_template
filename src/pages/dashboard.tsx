@@ -6,6 +6,7 @@ import {
 import { useEffect } from 'react';
 import NLayout from '../components/layout';
 import { useAppDispatch, useAppSelector } from '../store';
+import { getMasterData } from '../store/reducers/Auth.reducers';
 import { getDashboardData } from '../store/reducers/Dashboard.reducers';
 
 
@@ -14,7 +15,10 @@ export default function Dashboard() {
     const dashboardData = useAppSelector(state => state.dashboard);
     const dispatch = useAppDispatch();
 
-    useEffect(() => { dispatch(getDashboardData()) }, [])
+    useEffect(() => {
+        dispatch(getMasterData());
+        dispatch(getDashboardData());
+    }, [])
 
 
     return (

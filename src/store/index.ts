@@ -5,6 +5,7 @@ import UsersReducer from "./reducers/users.reducer";
 import FeedbacksReducer from "./reducers/feedbacks.reducer";
 import MapViewReducer from "./reducers/map_view.reducer";
 import DashboardReducer from "./reducers/Dashboard.reducers";
+import FieldSurveyReducer from "./reducers/field_survey.reducer";
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     feedbacks: FeedbacksReducer,
     map_view: MapViewReducer,
     dashboard: DashboardReducer,
+    field_survey: FieldSurveyReducer,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),

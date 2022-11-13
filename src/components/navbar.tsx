@@ -12,6 +12,7 @@ const navItems = [
     { link: '/', label: 'Dashboard', icon: IconDashboard },
     { link: '/users', label: 'Users', icon: IconUsers },
     { link: '/feedbacks', label: 'Feedbacks', icon: IconFileShredder },
+    { link: '/field_survey', label: 'Field Survey', icon: IconFileShredder },
     { link: '/map_view', label: 'Map View', icon: IconMap },
 ];
 
@@ -51,7 +52,10 @@ export default function Navbar() {
                     <Text lineClamp={1} size={14} weight={600}>{auth.data?.user_name}</Text>
                     <Text lineClamp={1} size={12} weight={400}>{auth.data?.email}</Text>
                 </div>
-                <IconLogout onClick={() => dispatch(logout())} />
+                <IconLogout onClick={() => {
+                    dispatch(logout())
+                    navigate('/login', { replace: true });
+                }} />
             </div>
         </div>
     )
