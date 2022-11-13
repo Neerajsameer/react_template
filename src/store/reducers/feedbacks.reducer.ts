@@ -77,7 +77,7 @@ export const getFeedbacks = () => {
   return async (dispatch: any) => {
     dispatch(setLoading(true));
     try {
-      let masterData = store.getState().auth.master_data;
+      let masterData = store.getState().dashboard.master_data;
       const feedbackFilters = store.getState().feedbacks.filters;
       const data = await Request.post({ url: API_URLS.DATA.feedbacks, data: feedbackFilters });
       const formattedData = data.map((x: any, i: number) => ({

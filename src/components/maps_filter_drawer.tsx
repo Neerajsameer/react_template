@@ -6,7 +6,7 @@ import { setShowFilters, setMapFilters } from "../store/reducers/map_view.reduce
 export function MapFiltersDrawer() {
     const dispatch = useAppDispatch();
     const mapData = useAppSelector((state) => state.map_view);
-    const masterData = useAppSelector((state) => state.auth.master_data);
+    const masterData = useAppSelector((state) => state.dashboard.master_data);
 
 
 
@@ -66,7 +66,7 @@ export function MapFiltersDrawer() {
                 <Divider my={20} />
                 <Checkbox.Group
                     label="Appreciation Types"
-                    defaultValue={['react']}
+
                     orientation="vertical"
                     spacing="xs"
                     size='sm'

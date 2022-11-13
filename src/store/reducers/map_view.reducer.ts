@@ -13,7 +13,10 @@ type MapData = {
     added_on: string;
     latitude: number;
     longitude: number;
+    m_district_id: number;
+    m_state_id: number;
   }[];
+  district_ids: number[];
   filters: {
     from_date?: Date | null;
     to_date?: Date | null;
@@ -35,6 +38,7 @@ const localFeedbackFilters = JSON.parse(SessionData.get("map_filters") ?? "{}") 
 
 const mapInitialData: MapData = {
   data: [],
+  district_ids: [],
   loading: false,
   filters: {
     from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : null,
@@ -73,6 +77,9 @@ export const MapDataInitialSlice = createSlice({
 
       SessionData.set("map_filters", JSON.stringify(state.filters));
     },
+    setMapDistrictIDs: (state, action: PayloadAction<number[]>) => {
+      state.district_ids = action.payload;
+    },
     setFeedbackID: (state, action: PayloadAction<number | null>) => {
       state.feedback_id = action.payload;
     },
@@ -85,7 +92,8 @@ export const MapDataInitialSlice = createSlice({
   },
 });
 
-export const { setLoading, resetState, setMapData, setMapFilters, setFeedbackID, setExtraDetails, setShowFilters } = MapDataInitialSlice.actions;
+export const { setLoading, resetState, setMapData, setMapFilters, setMapDistrictIDs, setFeedbackID, setExtraDetails, setShowFilters } =
+  MapDataInitialSlice.actions;
 
 export default MapDataInitialSlice.reducer;
 
@@ -96,6 +104,11 @@ export const getMapData = () => {
       const mapFilters = store.getState().map_view.filters;
       const data: MapData["data"] = await Request.post({ url: API_URLS.DATA.map_data, data: mapFilters });
       const formattedData = data.filter((item) => item.latitude !== null && item.longitude !== null && item.type);
+
+      const district_ids = data.map((x) => x.m_district_id);
+
+      dispatch(setMapDistrictIDs(district_ids));
+
       dispatch(setMapData(formattedData));
     } catch (e: any) {
       showNotification({ title: "Error", message: e, color: "red" });

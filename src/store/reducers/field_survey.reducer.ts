@@ -69,8 +69,17 @@ export const getFieldSurveys = () => {
       const fieldSurveyFilters = store.getState().feedbacks.filters;
       const data = await Request.post({ url: API_URLS.DATA.field_survey, data: fieldSurveyFilters });
       const formattedData = data.map((x: any, i: number) => ({
-        ...x,
         s_no: i + 1,
+        id: x.f_survey_general_details.f_survey_general_details_id,
+        created_at: new Date(x.f_survey_general_details.added_on),
+        m_state_id: x.f_survey_general_details.m_state_id,
+        m_district_id: x.f_survey_general_details.m_district_id,
+        m_designation_id: x.f_survey_general_details.m_designation_id,
+        m_department_id: x.f_survey_general_details.m_department_id,
+        highway_number: x.f_survey_road_details.highway_number,
+        repr_name: x.f_survey_general_details.repr_name,
+        user_id: x.f_survey_general_details.repr_id,
+        
       }));
 
       dispatch(setFieldSurveyData(formattedData));

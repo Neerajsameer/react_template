@@ -1,4 +1,6 @@
-import { Drawer, Group } from "@mantine/core";
+import { Drawer, Group, Text } from "@mantine/core";
+import { openConfirmModal } from "@mantine/modals";
+import { showNotification } from "@mantine/notifications";
 import { IconEdit, IconTrash } from "@tabler/icons";
 import { ColumnType } from "antd/lib/table";
 import moment from "moment";
@@ -14,10 +16,28 @@ export default function Users() {
 
     const dispatch = useAppDispatch();
     const users = useAppSelector((state) => state.users);
-    const masterData = useAppSelector((state) => state.auth.master_data);
+    const masterData = useAppSelector((state) => state.dashboard.master_data);
 
     useEffect(() => { dispatch(getUsers()) }, [])
 
+
+    const deleteUserModal = (user_id: number) => openConfirmModal({
+
+        title: 'Delete User',
+        children: (
+            <Text size="sm">
+                This action is irresversable. Are you sure you want to delete this user?
+            </Text>
+        ),
+        labels: { confirm: 'Delete', cancel: 'Cancel' },
+        confirmProps: { color: 'red' },
+        onCancel: () => console.log('Cancel'),
+        onConfirm: () => {
+            dispatch(deleteUser(user_id))
+            showNotification({ message: "Deleting User", loading: true, autoClose: 500, color: "blue" })
+
+        },
+    });
 
     const columns: ColumnType<apiUserData>[] = [
         { fixed: true, title: 'S No', dataIndex: 's_no', key: 's_no', align: 'center' },
@@ -34,7 +54,7 @@ export default function Users() {
             render: (value, record) => {
                 return (
                     <Group>
-                        <IconTrash onClick={() => dispatch(deleteUser(record.id_app_user))} />
+                        <IconTrash onClick={() => deleteUserModal(record.id_app_user)} />
                         <IconEdit onClick={() => dispatch(setShowAddUserModal({ show: true, data: record }))} />
                     </Group>
                 )
@@ -72,5 +92,6 @@ export default function Users() {
         </NLayout>
 
     </>
-}
 
+
+}

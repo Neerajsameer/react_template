@@ -4,8 +4,8 @@ import { divIcon, geoJSON } from 'leaflet';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
-import districtsJson  from '../assets/geojson/districts.json';
-import indiaJson  from '../assets/geojson/india.json';
+import districtsJson from '../assets/geojson/districts.json';
+import indiaJson from '../assets/geojson/india.json';
 import { markerSVG } from '../components/icons';
 import NLayout from '../components/layout';
 import { MapFiltersDrawer } from '../components/maps_filter_drawer';
@@ -13,20 +13,26 @@ import { API_URLS } from '../constants/api_urls';
 import { useAppDispatch, useAppSelector } from '../store';
 import { getMapData, setExtraDetails, setMapFilters, setShowFilters } from '../store/reducers/map_view.reducer';
 import { Request } from '../utils/functions.utils';
-import {feature} from 'topojson-client';
+import { feature } from 'topojson-client';
 
 export default function MapView() {
 
-    const x : GeoJSON.BBox = [72.4, 6.7, 97.4, 35.5];
+    const x: GeoJSON.BBox = [72.4, 6.7, 97.4, 35.5];
 
     const dispatch = useAppDispatch();
     const mapData = useAppSelector((state) => state.map_view);
-    const masterData = useAppSelector((state) => state.auth.master_data);
+    const masterData = useAppSelector((state) => state.dashboard.master_data);
+    const [show, setShow] = useState(false);
 
     useEffect(() => {
         if (!mapData.filters.from_date || !mapData.filters.to_date) dispatch(setShowFilters(true))
         dispatch(getMapData())
     }, [mapData.filters]);
+
+    useEffect(() => {
+        if (mapData.loading) setShow(true);
+        else setShow(false);
+    }, [mapData.loading]);
 
     useEffect(() => {
         if (mapData.filters.appreciation_types?.length == 0 && mapData.filters.complaint_types?.length == 0) {
@@ -38,8 +44,8 @@ export default function MapView() {
         }
     }, [])
 
-    const districtGeoData = feature(districtsJson as any, {type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => x.properties.m_state_id == 33)});
-    const indiaGeoData = feature(indiaJson as any,  (indiaJson as any).objects["India"]);
+    const districtGeoData = feature(districtsJson as any, { type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => mapData.district_ids.includes(x.properties.m_state_id)) });
+    const indiaGeoData = feature(indiaJson as any, (indiaJson as any).objects["India"]);
 
     return (
         <>
@@ -52,19 +58,21 @@ export default function MapView() {
                 />
                 <Group position='right'>
                     <IconFilter onClick={() => { dispatch(setShowFilters(true)) }} />
+                    {/* <IconFilter onClick={() => { setShow(prev => !prev) }} /> */}
                 </Group>
-                         <MapContainer center={[21.146633, 79.088860]} zoom={6} minZoom={2} maxZoom={20} scrollWheelZoom={true} style={{ height: "calc(100vh - 120px)", zIndex: 1 }}>
+                <MapContainer center={[21.146633, 79.088860]} zoom={6} minZoom={2} maxZoom={20} scrollWheelZoom={true} style={{ height: "calc(100vh - 120px)", zIndex: 1 }}>
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                         subdomains="abcd"
                     />
-                    {/* Show a GeoJson here */}
-                   <GeoJSON data={indiaGeoData} style={{color: "#F8E2B1", weight: 1,dashOffset: "1.5"}}/>
-                    {/* <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    /> */}
+
+                    {
+                        !show ?
+                            <GeoJSON data={indiaGeoData} style={{ color: "#000000", weight: 0.3, opacity: 0.9, fillOpacity: 0, fill: false, dashOffset: "1.5" }} />
+                            : <GeoJSON data={districtGeoData} style={{ color: "#000000", weight: 0.3, opacity: 0.9, fillOpacity: 0, fill: false, dashOffset: "1.5" }} />
+                    }
+
                     {
                         mapData.data.map((item, i) => {
                             return <Marker
@@ -98,7 +106,7 @@ export default function MapView() {
 function FeedbackPopUp({ id }: { id: number }) {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const masterData = useAppSelector((state) => state.auth.master_data);
+    const masterData = useAppSelector((state) => state.dashboard.master_data);
 
     useEffect(() => {
         Request.get({ url: API_URLS.DATA.get_feedback(id) }).then((res) => {
@@ -133,7 +141,7 @@ function FeedbackPopUp({ id }: { id: number }) {
 function SurveyPopUp({ id }: { id: number }) {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const masterData = useAppSelector((state) => state.auth.master_data);
+    const masterData = useAppSelector((state) => state.dashboard.master_data);
 
     useEffect(() => {
         Request.get({ url: API_URLS.DATA.get_field_survey(id) }).then((res) => {

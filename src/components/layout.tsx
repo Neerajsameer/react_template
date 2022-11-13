@@ -18,12 +18,12 @@ export default function NLayout({ children, title, backLink }: { children: React
     }, [width]);
 
     return <>
-        <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "none" }}>
-            {showNav ? <Navbar /> : null}
-            <div style={{ display: "flex", flexDirection: "column", width: "100%", overflowX: "scroll" }}>
+        <div style={{ display: "flex", width: "100vw", height: "100vh", overflow: "none", background: "#f9f9f9" }}>
+            {showNav ? <Navbar onClose={() => setShowNav(false)} /> : null}
+            <div style={{ marginLeft: width > 600 && showNav ? "250px" : "0px", display: "flex", flexDirection: "column", width: "100%", overflowX: "scroll" }}>
                 <div style={{ gap: "10px", height: "60px", display: 'flex', alignItems: 'center', padding: "15px" }}>
                     {!backLink ? null : <IconArrowLeft style={{ cursor: "pointer" }} onClick={() => navigate(backLink)} />}
-                    <IconMenu2 style={{ cursor: "pointer" }} onClick={() => setShowNav(!showNav)} />
+                    {!showNav && <IconMenu2 style={{ cursor: "pointer" }} onClick={() => setShowNav(!showNav)} />}
                     <Text size={20} weight={"bold"}>{title}</Text>
                 </div>
                 <Divider h={10} mx={20} />

@@ -13,6 +13,8 @@ export type apiUserData = {
   m_user_type_id: number;
   m_designation_id: number;
   m_department_id: number;
+  m_district_id: number[];
+  m_state_id: number;
   added_on: string;
 };
 

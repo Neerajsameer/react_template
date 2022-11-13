@@ -1,5 +1,5 @@
 import { Anchor, Button, Center, Checkbox, Container, Grid, Group, Paper, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
-import { useSetState } from "@mantine/hooks";
+import { useMediaQuery, useSetState } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { Divider } from "antd";
 import NTextBox from "../components/text_box";
@@ -12,15 +12,16 @@ export default function Login() {
     const [loginForm, setLoginForm] = useSetState({ email: "", password: "" });
     const dispatch = useAppDispatch();
     const auth = useAppSelector((state) => state.auth);
+    const isVisible = useMediaQuery("(max-width: 1000px)");
 
 
     return (
         <div style={{ height: "100vh", width: "100vw" }}>
             <Grid columns={6} style={{ height: "100%" }} p={0} m={0}>
-                <Grid.Col span={4}>
-                    <img src={AppImages.loginBG} alt="" width={"100%"} height={"100%"} style={{ objectFit: 'cover' }} />
+                <Grid.Col sm={6} md={4}  >
+                    {isVisible ? null : <img src={AppImages.loginBG} alt="" width={"100%"} height={"90%"} style={{ objectFit: 'cover' }} />}
                 </Grid.Col>
-                <Grid.Col span={2} >
+                <Grid.Col sm={6} md={2} >
                     <Center style={{ height: "100%", }}>
                         <Stack spacing={10} style={{ background: "white", boxShadow: "1px 1px 10px -1px grey" }}>
                             <Stack style={{ background: '#F0AA3C' }} p={10} spacing={0}>

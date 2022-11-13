@@ -1,6 +1,6 @@
 
 import { Group, Loader } from "@mantine/core";
-import { Table, TablePaginationConfig } from "antd";
+import { Pagination, Table, TablePaginationConfig } from "antd";
 import { ColumnsType, ColumnType, FilterValue, SorterResult, TableCurrentDataSource } from "antd/lib/table/interface";
 import { CSSProperties, useEffect, useState } from "react";
 
@@ -16,7 +16,7 @@ type TableProps = {
     totalCount: number; // the total count of the table data
 
     onTableChange?: (tableParams: TableParams) => void; // the function to call when we use table filters, pagination, etc
-
+    onRowClick?: (record: Record<string, any>) => void; // the function to call when we click on a row
     styles?: CSSProperties | undefined; // the styles to apply to the table
     pageSize?: number; // the page size of the table (defaults to 10) if not provided
 };
@@ -27,7 +27,7 @@ export default function NTable({
 
     onTableChange = () => { },
     data = [],
-
+    onRowClick,
     loading = false,
     totalCount: total_count,
     columns = [],
@@ -68,9 +68,18 @@ export default function NTable({
                     color: "#9A9A9A",
                     width: "100%",
                     maxHeight: "100px",
-                    ...styles,
-                }}
 
+                    ...styles,
+
+                }}
+                onRow={(record, rowIndex) => {
+                    return {
+                        onClick: () => {
+                            onRowClick?.(record);
+                        }
+                    };
+                }}
+                loading={loading}
                 scroll={{ x: "max-content" }}
                 columns={columns} //filtering columns which includes only changed values array
                 dataSource={data}

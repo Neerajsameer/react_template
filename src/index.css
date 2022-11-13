@@ -6,3 +6,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.ant-table-container {
+  font-family: "Mulish";
+}
+
+.ant-table-tbody > tr > td {
+  cursor: pointer;
+}

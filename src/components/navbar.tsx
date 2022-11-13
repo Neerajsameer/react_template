@@ -1,11 +1,12 @@
 import { Divider, Text } from "@mantine/core";
 import {
+    IconChevronsLeft,
     IconDashboard, IconFileShredder, IconLogout, IconMap, IconUsers
 } from '@tabler/icons';
 import { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AppImages } from "../constants/app_images";
-import { useAppDispatch, useAppSelector } from "../store";
+import store, { useAppDispatch, useAppSelector } from "../store";
 import { logout } from "../store/reducers/Auth.reducers";
 
 const navItems = [
@@ -16,7 +17,7 @@ const navItems = [
     { link: '/map_view', label: 'Map View', icon: IconMap },
 ];
 
-export default function Navbar() {
+export default function Navbar({ onClose }: { onClose: any }) {
     const [active, setActive] = useState(window.location.pathname);
     const auth = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
@@ -25,12 +26,15 @@ export default function Navbar() {
     return (
         <div className="navbar">
             <div className="top-section">
-                <img src={AppImages.logo} height={40} alt="fg" />
-                <Text size={24} weight={600}>CoERS</Text>
+                <div style={{ display: "flex", gap: "5px" }}>
+                    <img src={AppImages.logo} height={40} alt="fg" />
+                    <Text size={24} weight={600}>CoERS</Text>
+                </div>
+                <IconChevronsLeft onClick={onClose} />
             </div>
             <Divider my={10} />
             <div className="nav-links">
-                {navItems.map((item, i) => (
+                {!store.getState().dashboard.master_data ? null : navItems.map((item, i) => (
                     <div key={i} onClick={(event) => {
                         // setActive(item.link);
                         // event.preventDefault();

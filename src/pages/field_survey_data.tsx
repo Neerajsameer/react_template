@@ -10,7 +10,7 @@ import { Request } from "../utils/functions.utils";
 
 export default function FieldSurveyData() {
 
-    const masterData = useAppSelector((state) => state.auth.master_data);
+    const masterData = useAppSelector((state) => state.dashboard.master_data);
     const dispatch = useAppDispatch();
     const [surveyData, setSurveyData] = useState<FieldSurveyDataType>();
     const [loading, setLoading] = useState(true);

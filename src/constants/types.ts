@@ -52,6 +52,8 @@ export type FieldSurveyDataType = {
     remarks?: string;
     lattitude?: number;
     longitude?: number;
+    m_district_id: number;
+    m_state_id: number;
   };
   f_survey_road_details: {
     lat_long: { latitude: number; longitude: number };

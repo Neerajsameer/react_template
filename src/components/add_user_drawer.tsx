@@ -1,4 +1,4 @@
-import { Group, PasswordInput, Select, Space, Stack } from "@mantine/core";
+import { Group, MultiSelect, PasswordInput, Select, Space, Stack } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useState } from "react";
 import NButton from "../framework/NButton";
@@ -9,7 +9,7 @@ import NTextBox from "./text_box";
 export default function AddNewUserDrawer() {
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
-    const masterData = useAppSelector((state) => state.auth.master_data);
+    const masterData = useAppSelector((state) => state.dashboard.master_data);
     const editUserData = useAppSelector((state) => state.users.edit_user_data);
 
     const handleOnChange = (name: string, value: any) => {
@@ -68,6 +68,26 @@ export default function AddNewUserDrawer() {
                         handleOnChange("m_department_id", value)
                     }}
                     value={(editUserData?.m_department_id ?? 0)?.toString() as any}
+                />
+                <Select
+                    data={masterData.m_state.map((item, i) => ({ label: item.state_name, value: item.m_state_id.toString() }))}
+                    label="State"
+                    name="m_state_id"
+                    searchable
+                    clearable
+                    onChange={(value) => {
+                        handleOnChange("m_state_id", value)
+                    }}
+                    value={(editUserData?.m_state_id ?? 0)?.toString() as any}
+                />
+                <MultiSelect
+                    searchable
+                    clearable
+                    data={masterData.m_district.filter(x => x.m_state_id == editUserData?.m_state_id).map((item, i) => ({ label: item.district_name, value: item.m_district_id.toString() }))}
+                    label="District"
+                    name="m_district"
+                    onChange={(value) => handleOnChange("m_district", value)}
+                    value={(editUserData?.m_district_id ?? 0)?.toString() as any}
                 />
                 <Select
                     data={masterData.m_user_types.map((item, i) => ({ label: item, value: i.toString() }))}
