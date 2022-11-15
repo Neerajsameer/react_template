@@ -26,7 +26,7 @@ export type MasterData = {
   m_switching_type: string[];
   m_user_violation_enforcement_solutions: string[];
   m_vehicle_type: string[];
-  no_of_lanes: string[];
+  m_no_of_lanes: string[];
   m_state: {
     iso_code: string;
     m_state_id: number;

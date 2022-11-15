@@ -14,7 +14,11 @@ function App() {
 
     <MantineProvider withNormalizeCSS withGlobalStyles theme={{
       fontFamily: "Mulish",
-      primaryColor: "red",
+      primaryColor: "orange",
+      // primaryShade: 0,
+      // colors: {
+      //   'orange': ["#f36a2f4a"]
+      // },
       components: {
         Text: {}
       }

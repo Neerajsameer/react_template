@@ -44,7 +44,7 @@ const mapInitialData: MapData = {
     from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : null,
     to_date: localFeedbackFilters.to_date ? new Date(localFeedbackFilters.to_date) : null,
     complaint_types: localFeedbackFilters.complaint_types ?? [],
-    appreciation_types: localFeedbackFilters.appreciation_types,
+    appreciation_types: localFeedbackFilters.appreciation_types ?? [],
     field_survey: true,
   },
   feedback_id: null,

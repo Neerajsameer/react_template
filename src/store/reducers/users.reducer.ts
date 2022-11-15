@@ -81,11 +81,12 @@ export const createUser = () => {
 
     try {
       if (!editUserData?.name || !editUserData?.email || !editUserData?.password || !editUserData?.re_enter_password || !editUserData?.phone_number)
-        throw "Please fill all the fields";
+        if (!editUserData?.id_app_user) throw "Please fill all the fields";
       if (editUserData?.password !== editUserData?.re_enter_password) throw "Passwords do not match";
 
-      if (editUserData.id_app_user) await Request.put({ url: API_URLS.USERS.UPDATE_USER(editUserData.id_app_user), data: editUserData });
-      else await Request.post({ url: API_URLS.USERS.CREATE_USER, data: editUserData });
+      if (editUserData.id_app_user) {
+        await Request.put({ url: API_URLS.USERS.UPDATE_USER(editUserData.id_app_user), data: { ...editUserData, s_no: undefined } });
+      } else await Request.post({ url: API_URLS.USERS.CREATE_USER, data: editUserData });
       dispatch(setShowAddUserModal({ show: false }));
       dispatch(getUsers());
     } catch (e: any) {

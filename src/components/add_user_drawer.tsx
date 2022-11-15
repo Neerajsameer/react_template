@@ -33,18 +33,23 @@ export default function AddNewUserDrawer() {
                     label="Email"
 
                 />
-                <PasswordInput
-                    name="password"
-                    onChange={(e) => handleOnChange("password", e.target.value)}
-                    value={editUserData?.password}
-                    label="Password"
-                />
-                <PasswordInput
-                    name="re_enter_password"
-                    onChange={(e) => handleOnChange("re_enter_password", e.target.value)}
-                    value={editUserData?.re_enter_password}
-                    label="Re-enter Password"
-                />
+                {
+                    !editUserData?.id_app_user ? <>
+                        <PasswordInput
+                            name="password"
+                            onChange={(e) => handleOnChange("password", e.target.value)}
+                            value={editUserData?.password}
+                            label="Password"
+                        />
+                        <PasswordInput
+                            name="re_enter_password"
+                            onChange={(e) => handleOnChange("re_enter_password", e.target.value)}
+                            value={editUserData?.re_enter_password}
+                            label="Re-enter Password"
+                        />
+                    </> : <></>
+                }
+
                 <NTextBox
                     name="phone_number"
                     onChange={(name, e) => handleOnChange(name, e)}
@@ -58,7 +63,7 @@ export default function AddNewUserDrawer() {
                     onChange={(value) => {
                         handleOnChange("m_designation_id", value)
                     }}
-                    value={(editUserData?.m_designation_id ?? 0)?.toString() as any}
+                    value={(editUserData?.m_designation_id)?.toString() as any}
                 />
                 <Select
                     data={masterData.m_department.map((item, i) => ({ label: item, value: i.toString() }))}
@@ -67,7 +72,7 @@ export default function AddNewUserDrawer() {
                     onChange={(value) => {
                         handleOnChange("m_department_id", value)
                     }}
-                    value={(editUserData?.m_department_id ?? 0)?.toString() as any}
+                    value={(editUserData?.m_department_id)?.toString() as any}
                 />
                 <Select
                     data={masterData.m_state.map((item, i) => ({ label: item.state_name, value: item.m_state_id.toString() }))}
@@ -78,16 +83,16 @@ export default function AddNewUserDrawer() {
                     onChange={(value) => {
                         handleOnChange("m_state_id", value)
                     }}
-                    value={(editUserData?.m_state_id ?? 0)?.toString() as any}
+                    value={(editUserData?.m_state_id)?.toString() as any}
                 />
                 <MultiSelect
                     searchable
                     clearable
                     data={masterData.m_district.filter(x => x.m_state_id == editUserData?.m_state_id).map((item, i) => ({ label: item.district_name, value: item.m_district_id.toString() }))}
                     label="District"
-                    name="m_district"
-                    onChange={(value) => handleOnChange("m_district", value)}
-                    value={(editUserData?.m_district_id ?? 0)?.toString() as any}
+                    name="m_district_id"
+                    onChange={(value) => handleOnChange("m_district_id", value.map(x => parseInt(x)))}
+                    value={editUserData?.m_district_id?.map(x => x.toString()) as any}
                 />
                 <Select
                     data={masterData.m_user_types.map((item, i) => ({ label: item, value: i.toString() }))}
@@ -96,12 +101,12 @@ export default function AddNewUserDrawer() {
                     onChange={(value) => {
                         handleOnChange("m_user_type_id", value)
                     }}
-                    value={(editUserData?.m_user_type_id ?? 0)?.toString() as any}
+                    value={(editUserData?.m_user_type_id)?.toString() as any}
                 />
 
                 <Group position="right">
                     <NButton
-                        label="Create User"
+                        label={editUserData?.id_app_user ? "Update User" : "Create User"}
                         loading={loading}
                         onClick={async () => {
                             setLoading(true);

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import NLayout from "../components/layout";
 import { API_URLS } from '../constants/api_urls';
-import { FieldSurveyDataType } from "../constants/types";
+import { FieldSurveyDataType, MasterData } from "../constants/types";
 import { useAppDispatch, useAppSelector } from "../store";
 import { getUsers } from "../store/reducers/users.reducer";
 import { Request } from "../utils/functions.utils";
@@ -52,6 +52,14 @@ export default function FieldSurveyData() {
 
     return (
         <NLayout title="Field Survey Data" backLink="/field_survey">
+            <SurveyDataComponent masterData={masterData} surveyData={surveyData} />
+        </NLayout>
+    )
+}
+
+export function SurveyDataComponent({ surveyData, masterData }: { surveyData: FieldSurveyDataType, masterData: MasterData }) {
+    return (
+        <>
             <FSection title="General Details">
                 <DText question="Representative Name" answer={surveyData.f_survey_general_details.repr_name} />
                 <DText question="Designation" answer={surveyData.f_survey_general_details.m_designation_id} masterList={masterData.m_designation} />
@@ -69,7 +77,7 @@ export default function FieldSurveyData() {
                 <DText question="Formation of Junction" answer={surveyData.f_survey_road_details.m_junc_formation_id} masterList={masterData.m_junc_formation} />
                 <DText question="Stretch Type" answer={surveyData.f_survey_road_details.m_stretch_type_id} masterList={masterData.m_stretch_type} />
                 <DText question="Stretch Shape" answer={surveyData.f_survey_road_details.m_stretch_shape_id} masterList={masterData.m_stretch_shape} />
-                <DText question="No. of Lanes" answer={surveyData.f_survey_road_details.no_of_lanes_id} masterList={masterData.no_of_lanes} />
+                <DText question="No. of Lanes" answer={surveyData.f_survey_road_details.no_of_lanes_id} masterList={masterData.m_no_of_lanes} />
                 <DText question="Other's specify" answer={surveyData.f_survey_road_details.no_of_lanes_other} />
                 <DText question="Presence of Median" answer={surveyData.f_survey_road_details.is_median} />
                 <DText question="Nature of Spot" answer={surveyData.f_survey_road_details.m_nature_of_spot_id} masterList={masterData.m_nature_of_spot} />
@@ -134,14 +142,16 @@ export default function FieldSurveyData() {
                 <DText question="Enforcement solutions - Road user violations" answer={surveyData.f_survey_road_user_violation.m_user_violation_enforcement_solutions_id} masterList={masterData.m_user_violation_enforcement_solutions} />
                 <DText question="Others - Specify" answer={surveyData.f_survey_road_user_violation.m_user_violation_enforcement_solutions_other} />
             </FSection>
-        </NLayout>
+        </>
     )
 }
+
+
 
 function FSection({ title, children }: { title: string, children: any }) {
     return (
         <>
-            <Text weight={"bolder"} size="lg" color="red">{title}</Text>
+            <Text weight={"bolder"} size="lg" color={"orange"}>{title}</Text>
             <Space h={20} />
             <SimpleGrid cols={3}>
                 {children}

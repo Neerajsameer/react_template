@@ -1,9 +1,10 @@
-import { Divider, Group, Text } from '@mantine/core';
+import { Center, Divider, Group, Loader, Modal, Popover, Text } from '@mantine/core';
 import { IconFilter } from '@tabler/icons';
-import { divIcon, geoJSON } from 'leaflet';
+import { divIcon } from 'leaflet';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
+import { GeoJSON, MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { feature } from 'topojson-client';
 import districtsJson from '../assets/geojson/districts.json';
 import indiaJson from '../assets/geojson/india.json';
 import { markerSVG } from '../components/icons';
@@ -13,11 +14,10 @@ import { API_URLS } from '../constants/api_urls';
 import { useAppDispatch, useAppSelector } from '../store';
 import { getMapData, setExtraDetails, setMapFilters, setShowFilters } from '../store/reducers/map_view.reducer';
 import { Request } from '../utils/functions.utils';
-import { feature } from 'topojson-client';
+import { SurveyDataComponent } from './field_survey_data';
 
 export default function MapView() {
 
-    const x: GeoJSON.BBox = [72.4, 6.7, 97.4, 35.5];
 
     const dispatch = useAppDispatch();
     const mapData = useAppSelector((state) => state.map_view);
@@ -44,7 +44,7 @@ export default function MapView() {
         }
     }, [])
 
-    const districtGeoData = feature(districtsJson as any, { type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => mapData.district_ids.includes(x.properties.m_state_id)) });
+    const districtGeoData = feature(districtsJson as any, { type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => mapData.district_ids.includes(x.properties.m_state_id)) }); //
     const indiaGeoData = feature(indiaJson as any, (indiaJson as any).objects["India"]);
 
     return (
@@ -68,13 +68,45 @@ export default function MapView() {
                     />
 
                     {
-                        !show ?
-                            <GeoJSON data={indiaGeoData} style={{ color: "#000000", weight: 0.3, opacity: 0.9, fillOpacity: 0, fill: false, dashOffset: "1.5" }} />
-                            : <GeoJSON data={districtGeoData} style={{ color: "#000000", weight: 0.3, opacity: 0.9, fillOpacity: 0, fill: false, dashOffset: "1.5" }} />
+                        mapData.loading ?
+                            <GeoJSON key={"india"} data={indiaGeoData} style={{ color: "#000000", weight: 0.3, opacity: 0.9, fillOpacity: 0, fill: false, dashOffset: "1.5" }} />
+                            : <GeoJSON key={"district"} data={districtGeoData} style={{
+                                'color': 'gray'
+                                , 'fillColor': 'white'
+                                , 'weight': 0.5
+                                , 'opacity': 1
+                                , 'fillOpacity': 0.8
+                            }} />
                     }
 
                     {
                         mapData.data.map((item, i) => {
+                            // return (
+                            //     <Popover width={300} trapFocus position="bottom" withArrow shadow="md">
+                            //         <Popover.Target>
+                            //             <Marker
+                            //                 key={i}
+                            //                 eventHandlers={{
+                            //                     click: () => {
+                            //                         dispatch(setExtraDetails({
+                            //                             clicked_id: item.id,
+                            //                             clicked_type: item.type
+                            //                         }))
+                            //                     }
+                            //                 }}
+                            //                 position={[item.latitude, item.longitude]}
+                            //                 icon={divIcon({
+                            //                     html: markerSVG(item.type), iconSize: [0, 0],
+                            //                     iconAnchor: [0, 0]
+                            //                 })}>
+                            //                 {item.type == "survey" ? <SurveyPopUp id={item.id} /> : <FeedbackPopUp id={item.id} />}
+                            //             </Marker>
+                            //         </Popover.Target>
+                            //         <Popover.Dropdown sx={(theme) => ({ background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}>
+                            //             {item.type == "survey" ? <SurveyPopUp id={item.id} /> : <FeedbackPopUp id={item.id} />}
+                            //         </Popover.Dropdown>
+                            //     </Popover>
+                            // )
                             return <Marker
                                 key={i}
                                 eventHandlers={{
@@ -91,7 +123,6 @@ export default function MapView() {
                                     iconAnchor: [0, 0]
                                 })}>
                                 {item.type == "survey" ? <SurveyPopUp id={item.id} /> : <FeedbackPopUp id={item.id} />}
-
                             </Marker>
                         })
                     }
@@ -122,7 +153,7 @@ function FeedbackPopUp({ id }: { id: number }) {
     return (
         <Popup >
             <div style={{ width: "300px" }}>
-                <Text size='sm' weight={800}>Feedback</Text>
+                <Text size={"sm"} weight={800}>{data?.feedback_type == 1 ? "Complaint" : "Appreciation"}</Text>
                 <Text size='xs' weight={500}>Taken By {data?.name} on {moment(data?.added_on).format("DD MMM, yyyy")}</Text>
                 <Divider my={5} />
                 <Group spacing={'xs'}>
@@ -142,6 +173,7 @@ function SurveyPopUp({ id }: { id: number }) {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const masterData = useAppSelector((state) => state.dashboard.master_data);
+    const [open, setOpen] = useState<boolean>(true);
 
     useEffect(() => {
         Request.get({ url: API_URLS.DATA.get_field_survey(id) }).then((res) => {
@@ -155,6 +187,9 @@ function SurveyPopUp({ id }: { id: number }) {
     if (loading) return <span>Loading...</span>
 
     return (
+        // <Modal size={"xl"} onClose={() => setOpen(false)} opened={open}>
+        //     {loading ? <Center><Loader /></Center> : <SurveyDataComponent masterData={masterData} surveyData={data} />}
+        // </Modal>
         <Popup >
             <div style={{ width: "300px" }}>
                 <Text size='sm' weight={800}>Field Survey</Text>
