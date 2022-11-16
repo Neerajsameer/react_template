@@ -109,7 +109,7 @@ export const getMapData = () => {
 
       dispatch(setMapDistrictIDs(district_ids));
 
-      dispatch(setMapData(formattedData));
+      dispatch(setMapData(data));
     } catch (e: any) {
       showNotification({ title: "Error", message: e, color: "red" });
     } finally {

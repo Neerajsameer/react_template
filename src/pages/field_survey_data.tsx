@@ -90,7 +90,7 @@ export function SurveyDataComponent({ surveyData, masterData }: { surveyData: Fi
             </FSection>
             <Space h={20} />
             <FSection title="Traffic Conditions">
-                TODO - Peak Hours
+                <DText question="Peak Hours" answer={surveyData.f_survey_traffic_conditions.peak_hours.map(x => (x.start_time + " - " + x.end_time)).join(", \n")} />
                 <DText question="Prevalent vehicle type" answer={surveyData.f_survey_traffic_conditions.m_vehicle_type_id} masterList={masterData.m_vehicle_type} />
             </FSection>
             <Space h={20} />

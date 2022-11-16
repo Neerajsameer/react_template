@@ -40,7 +40,10 @@ export type MasterData = {
 };
 
 type ImageData = {};
-type PeakHours = {};
+type PeakHours = {
+  start_time: string;
+  end_time: string;
+};
 
 export type FieldSurveyDataType = {
   f_survey_general_details: {

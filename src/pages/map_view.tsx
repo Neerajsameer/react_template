@@ -1,4 +1,5 @@
 import { Center, Divider, Group, Loader, Modal, Popover, Text } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { IconFilter } from '@tabler/icons';
 import { divIcon } from 'leaflet';
 import moment from 'moment';
@@ -44,9 +45,10 @@ export default function MapView() {
         }
     }, [])
 
-    const districtGeoData = feature(districtsJson as any, { type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => mapData.district_ids.includes(x.properties.m_state_id)) }); //
+    const districtGeoData = feature(districtsJson as any, { type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => mapData.district_ids.includes(x.properties.m_district_id)) }); //
     const indiaGeoData = feature(indiaJson as any, (indiaJson as any).objects["India"]);
 
+    console.log({ d: mapData.data })
     return (
         <>
             <NLayout title='Map View'>
@@ -60,7 +62,7 @@ export default function MapView() {
                     <IconFilter onClick={() => { dispatch(setShowFilters(true)) }} />
                     {/* <IconFilter onClick={() => { setShow(prev => !prev) }} /> */}
                 </Group>
-                <MapContainer center={[21.146633, 79.088860]} zoom={6} minZoom={2} maxZoom={20} scrollWheelZoom={true} style={{ height: "calc(100vh - 120px)", zIndex: 1 }}>
+                <MapContainer center={[21.146633, 79.088860]} zoom={3} minZoom={2} maxZoom={20} scrollWheelZoom={true} style={{ height: "calc(100vh - 120px)", zIndex: 1 }}>
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
@@ -133,11 +135,11 @@ export default function MapView() {
     )
 }
 
-
 function FeedbackPopUp({ id }: { id: number }) {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const masterData = useAppSelector((state) => state.dashboard.master_data);
+
 
     useEffect(() => {
         Request.get({ url: API_URLS.DATA.get_feedback(id) }).then((res) => {
@@ -208,20 +210,7 @@ function SurveyPopUp({ id }: { id: number }) {
                     <Text size='xs' weight={500}>{data?.m_designation_value}</Text>
                 </Group>
                 <Divider my={5} />
-                <Text size='sm' weight={800}>Signal Details</Text>
-                <Group spacing={'xs'}>
-                    <Text size='xs' weight={700}>Is Signal Available:</Text>
-                    <Text size='xs' weight={500}>{data?.is_signal_available}</Text>
-                </Group>
-                <Group spacing={'xs'}>
-                    <Text size='xs' weight={700}>Is Signal Visible:</Text>
-                    <Text size='xs' weight={500}>{data?.is_signal_visible}</Text>
-                </Group>
-                <Group spacing={'xs'}>
-                    <Text size='xs' weight={700}>Is Signal Working:</Text>
-                    <Text size='xs' weight={500}>{data?.is_signal_working}</Text>
-                </Group>
-
+                <a href={`/field_survey_data?survey_id=${id}`} target={"_blank"}>View Full Details</a>
             </div>
         </Popup>
     )
