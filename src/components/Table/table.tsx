@@ -58,20 +58,11 @@ export default function NTable({
         setPagination(pagination);
     };
 
-
     return (
         <>
             <Table
                 size="large"
                 rowKey="rootfi_id"
-                style={{
-                    color: "#9A9A9A",
-                    width: "100%",
-                    maxHeight: "100px",
-
-                    ...styles,
-
-                }}
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: () => {

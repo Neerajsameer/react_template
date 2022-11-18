@@ -1,4 +1,4 @@
-import { Grid, Modal, Select, Space, Text } from "@mantine/core";
+import { Center, Grid, Loader, Modal, Select, Space, Stack, Text } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 import { IconEye } from "@tabler/icons";
 import { ColumnType } from "antd/lib/table";
@@ -10,7 +10,7 @@ import { API_URLS } from "../constants/api_urls";
 import { feedBackTypesList } from "../constants/constants";
 import NBadge from "../framework/NBadge";
 import { useAppDispatch, useAppSelector } from "../store";
-import { getFeedbacks, setFeedbackFilters, setFeedbackID } from "../store/reducers/feedbacks.reducer";
+import { Feedback, getFeedbacks, setFeedbackData, setFeedbackFilters } from "../store/reducers/feedbacks.reducer";
 import { Request } from "../utils/functions.utils";
 
 export default function FeedBackPage() {
@@ -33,7 +33,7 @@ export default function FeedBackPage() {
     { title: 'Comment', dataIndex: 'comment', key: 'comment' },
     {
       title: 'More', dataIndex: 'more', key: 'more', render: (value, record) => {
-        return <IconEye onClick={() => dispatch(setFeedbackID(record.s_feedback_id))} />
+        return <IconEye onClick={() => dispatch(setFeedbackData(record))} />
       }
     },
   ];
@@ -85,8 +85,10 @@ export default function FeedBackPage() {
       <Space h={30} />
 
       <Modal
-        opened={!!feedbackData.feedback_id}
-        onClose={() => dispatch(setFeedbackID(null))}
+        opened={!!feedbackData.feedback_data}
+        onClose={() => {
+          dispatch(setFeedbackData(null))
+        }}
         title="Photos"
         padding="xl"
         size="xl"
@@ -102,26 +104,30 @@ export default function FeedBackPage() {
 function PhotosViewer() {
   const [photos, setPhotos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const feedback_id = useAppSelector((state) => state.feedbacks.feedback_id);
+  const feedback_data = useAppSelector((state) => state.feedbacks.feedback_data);
   useEffect(() => {
-    Request.get({ url: API_URLS.DATA.feedback_images(feedback_id!) }).then((res) => {
+    Request.get({ url: API_URLS.DATA.feedback_images(feedback_data?.s_feedback_id as any) }).then((res) => {
       setPhotos(res.filter((x: any) => x.img));
       setLoading(false)
     })
   }, []);
 
-  if (loading) return <Text>Loading...</Text>
+  if (loading) return <Center><Loader /></Center>
 
   return (
     <div>
       {photos.length == 0 ? <Text size={"xs"}>No Photos Available</Text> : photos.map((item, i) => {
         return (
-          <img
-            src={`data:image/png;base64, ${item.img}`}
-            height={200}
-            width={200}
-            style={{ objectFit: "cover", margin: "10px", borderRadius: "10px" }}
-          />
+          <Stack spacing={2}>
+            <img
+              src={`data:image/png;base64, ${item.img}`}
+              height={200}
+              width={200}
+              style={{ objectFit: "cover", borderRadius: "10px" }}
+            />
+            <Text mt={10} weight={"bold"} size="md">{feedback_data?.added_by}</Text>
+            <Text size="xs">{moment(feedback_data?.added_on).format("DD MMM, YYYY HH:MM a")}</Text>
+          </Stack>
         );
       })}
     </div>

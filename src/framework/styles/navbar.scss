@@ -38,7 +38,9 @@
       background-color: transparent;
       cursor: pointer;
       text-decoration: none;
-      color: $primary-color;
+      color: red; //$primary-color;
+      font-weight: 600;
+      font-size: 17px;
 
       &:hover {
         background-color: #f36a2f4a;

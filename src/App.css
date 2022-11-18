@@ -2,3 +2,9 @@
   width: 100%;
   height: 100vh;
 }
+
+.ant-table-thead > tr > th {
+  background-color: #dedede !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+}

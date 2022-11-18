@@ -1,14 +1,18 @@
-import { Group } from "@mantine/core";
+import { Group, Loader, Modal, Select } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
+import { IconEye } from "@tabler/icons";
 import { ColumnType } from "antd/lib/table";
 import moment from "moment";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NLayout from "../components/layout";
 import NTable from "../components/Table/table";
+import { API_URLS } from "../constants/api_urls";
 import NButton from "../framework/NButton";
 import { useAppDispatch, useAppSelector } from "../store";
-import { getFieldSurveys, setFieldSurveyFilters } from "../store/reducers/field_survey.reducer";
+import { getFieldSurveys, setFieldSurveyExtraDetails, setFieldSurveyFilters } from "../store/reducers/field_survey.reducer";
+import { Request } from "../utils/functions.utils";
+import { SurveyDataComponent } from "./field_survey_data";
 
 export default function FieldSurvey() {
 
@@ -17,7 +21,7 @@ export default function FieldSurvey() {
     const masterData = useAppSelector((state) => state.dashboard.master_data);
     const navigate = useNavigate()
 
-    useEffect(() => { dispatch(getFieldSurveys()) }, [])
+    useEffect(() => { dispatch(getFieldSurveys()) }, [fieldSurvey.filters])
 
 
     const columns: ColumnType<any>[] = [
@@ -29,6 +33,11 @@ export default function FieldSurvey() {
         { title: 'District', dataIndex: 'm_district_id', key: 'm_district_id', render: (value: any) => <>{masterData.m_district.find(x => x.m_district_id == value)?.district_name}</> },
         { title: 'Designation', dataIndex: 'm_designation_id', key: 'm_designation_id', render: (value: any) => <>{masterData.m_designation[value]}</> },
         { title: 'Department', dataIndex: 'm_department_id', key: 'm_department_id', render: (value: any) => <>{masterData.m_department[value]}</> },
+        {
+            title: 'More', dataIndex: 'more', key: 'more', render: (value, record) => {
+                return <IconEye onClick={() => dispatch(setFieldSurveyExtraDetails(record))} />
+            }
+        },
     ];
 
     return <>
@@ -52,6 +61,39 @@ export default function FieldSurvey() {
                         dispatch(setFieldSurveyFilters({ to_date: date }))
                     }}
                 />
+                <Select
+                    data={masterData.m_department.map((item, i) => ({ label: item, value: i.toString() }))}
+                    label="Department"
+                    name="m_department_id"
+                    onChange={(value) => {
+                        dispatch(setFieldSurveyFilters({ m_department_id: value as any }))
+                    }}
+                    value={(fieldSurvey.filters.m_department_id)?.toString()}
+                />
+                <Select
+                    data={masterData.m_state.map((item, i) => ({ label: item.state_name, value: item.m_state_id.toString() }))}
+                    label="State"
+                    name="m_state_id"
+                    searchable
+                    clearable
+                    onChange={(value) => {
+                        dispatch(setFieldSurveyFilters({ m_state_id: value as any }))
+
+                    }}
+                    value={(fieldSurvey.filters.m_state_id)?.toString()}
+                />
+                <Select
+                    data={masterData.m_district.filter(x => x.m_state_id == fieldSurvey.filters.m_state_id).map((item, i) => ({ label: item.district_name, value: item.m_district_id.toString() }))}
+                    label="District"
+                    name="m_district_id"
+                    searchable
+                    clearable
+                    onChange={(value) => {
+                        dispatch(setFieldSurveyFilters({ m_district_id: value as any }))
+
+                    }}
+                    value={(fieldSurvey.filters.m_district_id)?.toString()}
+                />
             </Group>
             <div style={{ width: "100%" }}>
                 <NTable
@@ -60,11 +102,44 @@ export default function FieldSurvey() {
                     loading={fieldSurvey.loading}
                     pageSize={10}
                     totalCount={10}
-                    onRowClick={(record) => navigate(`/field_survey_data?survey_id=${record.id}`)}
                 />
             </div>
+            <Modal
+                opened={!!fieldSurvey.extra_details}
+                onClose={() => {
+                    dispatch(setFieldSurveyExtraDetails(null))
+                }}
+                title="Photos"
+                padding="xl"
+                size="90%"
+            >
+                <FiedlSurveyPopup />
+            </Modal>
         </NLayout>
-
     </>
 }
 
+
+function FiedlSurveyPopup() {
+    const fieldSurveyExtraDetails = useAppSelector((state) => state.field_survey.extra_details);
+    const masterData = useAppSelector((state) => state.dashboard.master_data);
+    const [data, setData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        Request.post({ url: API_URLS.DATA.field_survey, data: { id: (fieldSurveyExtraDetails as any).id } }).then(res => {
+            console.log({ res: res })
+            setData(res[0]);
+            setLoading(false);
+        })
+    }, [])
+
+    return (
+        <>
+            {
+                loading ? <Loader /> :
+                    <SurveyDataComponent surveyData={data!} masterData={masterData} />
+            }
+        </>
+    );
+}

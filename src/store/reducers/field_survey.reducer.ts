@@ -10,9 +10,14 @@ type FieldSurveyType = {
   filters: {
     from_date?: Date | null;
     to_date?: Date | null;
+    m_state_id?: number | null;
+    m_district_id?: number | null;
+    m_department_id?: number | null;
+    m_user_id?: number | null;
   };
   loading: boolean;
   feedback_id: number | null;
+  extra_details: FieldSurveyDataType | null;
 };
 
 const localFeedbackFilters = JSON.parse(SessionData.get("field_survey_filters") ?? "{}") as FieldSurveyType["filters"];
@@ -21,10 +26,15 @@ const feedbackInitialData: FieldSurveyType = {
   data: [],
   loading: false,
   filters: {
-    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : new Date(),
-    to_date: localFeedbackFilters.to_date ? new Date(localFeedbackFilters.to_date) : new Date(),
+    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : new Date(new Date().setDate(new Date().getDate() - 7)),
+    to_date: new Date(),
+    m_state_id: localFeedbackFilters.m_state_id ?? null,
+    m_district_id: localFeedbackFilters.m_district_id ?? null,
+    m_department_id: localFeedbackFilters.m_department_id ?? null,
+    m_user_id: localFeedbackFilters.m_user_id ?? null,
   },
   feedback_id: null,
+  extra_details: null,
 };
 
 export const FeedbacksInitialSlice = createSlice({
@@ -55,10 +65,14 @@ export const FeedbacksInitialSlice = createSlice({
     setFeedbackID: (state, action: PayloadAction<number | null>) => {
       state.feedback_id = action.payload;
     },
+    setFieldSurveyExtraDetails: (state, action: PayloadAction<FieldSurveyType["extra_details"]>) => {
+      state.extra_details = action.payload;
+    },
   },
 });
 
-export const { setLoading, resetState, setFieldSurveyData, setFieldSurveyFilters, setFeedbackID } = FeedbacksInitialSlice.actions;
+export const { setLoading, resetState, setFieldSurveyData, setFieldSurveyFilters, setFeedbackID, setFieldSurveyExtraDetails } =
+  FeedbacksInitialSlice.actions;
 
 export default FeedbacksInitialSlice.reducer;
 
@@ -79,7 +93,6 @@ export const getFieldSurveys = () => {
         highway_number: x.f_survey_road_details.highway_number,
         repr_name: x.f_survey_general_details.repr_name,
         user_id: x.f_survey_general_details.repr_id,
-        
       }));
 
       dispatch(setFieldSurveyData(formattedData));

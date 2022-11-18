@@ -3,7 +3,7 @@ import _ from "lodash";
 import { API_URLS } from "../constants/api_urls";
 import store from "../store";
 
-type local_keys = "user" | "master_data" | "map_filters" | "feedback_filters" | "field_survey_filters";
+type local_keys = "user" | "master_data" | "map_filters" | "feedback_filters" | "field_survey_filters" | "dept_users";
 
 export const SessionData = {
   set: (key: local_keys, data: any) => localStorage.setItem(key, data),

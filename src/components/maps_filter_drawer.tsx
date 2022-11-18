@@ -1,4 +1,4 @@
-import { ScrollArea, Group, Drawer, Divider, Checkbox, Space } from "@mantine/core";
+import { ScrollArea, Group, Drawer, Divider, Checkbox, Space, Select } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 import { useAppDispatch, useAppSelector } from "../store";
 import { setShowFilters, setMapFilters } from "../store/reducers/map_view.reducer";
@@ -7,6 +7,7 @@ export function MapFiltersDrawer() {
     const dispatch = useAppDispatch();
     const mapData = useAppSelector((state) => state.map_view);
     const masterData = useAppSelector((state) => state.dashboard.master_data);
+    const users = useAppSelector((state) => state.dashboard.dept_users);
 
 
 
@@ -46,6 +47,34 @@ export function MapFiltersDrawer() {
                 </Group>
 
                 <Divider my={20} />
+
+                {/* <Group grow> */}
+                <Select
+                    data={masterData.m_state.map((item, i) => ({ label: item.state_name, value: item.m_state_id.toString() }))}
+                    label="State"
+                    name="m_state_id"
+                    searchable
+                    clearable
+                    onChange={(value) => {
+                        dispatch(setMapFilters({ m_state_id: value as any }))
+
+                    }}
+                    value={(mapData.filters.m_state_id)?.toString()}
+                />
+                <Select
+                    data={masterData.m_district.filter(x => x.m_state_id == mapData.filters.m_state_id).map((item, i) => ({ label: item.district_name, value: item.m_district_id.toString() }))}
+                    label="District"
+                    name="m_district_id"
+                    searchable
+                    clearable
+                    onChange={(value) => {
+                        dispatch(setMapFilters({ m_district_id: value as any }))
+                    }}
+                    value={(mapData.filters.m_district_id)?.toString()}
+                />
+                <Divider my={20} />
+
+                {/* </Group> */}
                 <Checkbox.Group
                     label="Complaint Types"
                     orientation="vertical"
@@ -93,7 +122,30 @@ export function MapFiltersDrawer() {
                         dispatch(setMapFilters({ field_survey: e.currentTarget.checked }))
                     }}
                 />
-                <Space h={50} />
+                <Space h={20} />
+                <Select
+                    data={masterData.m_department.map((item, i) => ({ label: item, value: i.toString() }))}
+                    label="Department"
+                    name="m_department_id"
+                    searchable
+                    clearable
+                    onChange={(value) => {
+                        dispatch(setMapFilters({ m_department_id: value as any }))
+                    }}
+                    value={(mapData.filters.m_department_id)?.toString()}
+                />
+                <Select
+                    data={users.filter(x => x.m_department_id == mapData.filters.m_department_id).map((item, i) => ({ label: item.name, value: item.id_app_user.toString() }))}
+                    label="User"
+                    name="m_user_id"
+                    searchable
+                    clearable
+                    onChange={(value) => {
+                        dispatch(setMapFilters({ m_user_id: value as any }))
+                    }}
+                    value={(mapData.filters.m_user_id)?.toString()}
+                />
+                <Space h={100} />
             </ScrollArea>
         </Drawer>
     )

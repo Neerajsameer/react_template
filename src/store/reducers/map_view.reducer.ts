@@ -23,6 +23,10 @@ type MapData = {
     complaint_types?: string[];
     appreciation_types?: string[];
     field_survey?: boolean;
+    m_state_id?: number;
+    m_district_id?: number;
+    m_department_id?: number;
+    m_user_id?: number;
   };
   loading: boolean;
   feedback_id: number | null;
@@ -41,11 +45,15 @@ const mapInitialData: MapData = {
   district_ids: [],
   loading: false,
   filters: {
-    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : null,
-    to_date: localFeedbackFilters.to_date ? new Date(localFeedbackFilters.to_date) : null,
+    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : new Date(new Date().setDate(new Date().getDate() - 7)),
+    to_date: new Date(),
     complaint_types: localFeedbackFilters.complaint_types ?? [],
     appreciation_types: localFeedbackFilters.appreciation_types ?? [],
     field_survey: true,
+    m_state_id: localFeedbackFilters.m_state_id,
+    m_district_id: localFeedbackFilters.m_district_id,
+    m_department_id: localFeedbackFilters.m_department_id,
+    m_user_id: localFeedbackFilters.m_user_id,
   },
   feedback_id: null,
   extra_details: null,

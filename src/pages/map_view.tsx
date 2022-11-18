@@ -1,6 +1,8 @@
 import { Center, Divider, Group, Loader, Modal, Popover, Text } from '@mantine/core';
+import { useViewportSize } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { IconFilter } from '@tabler/icons';
+import { randomUUID } from 'crypto';
 import { divIcon } from 'leaflet';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -24,6 +26,13 @@ export default function MapView() {
     const mapData = useAppSelector((state) => state.map_view);
     const masterData = useAppSelector((state) => state.dashboard.master_data);
     const [show, setShow] = useState(false);
+    const { width } = useViewportSize();
+    const [initialZoom, setInitialZoom] = useState(5);
+
+
+    useEffect(() => {
+        setInitialZoom(width < 765 ? 4 : 5);
+    }, [])
 
     useEffect(() => {
         if (!mapData.filters.from_date || !mapData.filters.to_date) dispatch(setShowFilters(true))
@@ -45,7 +54,8 @@ export default function MapView() {
         }
     }, [])
 
-    const districtGeoData = feature(districtsJson as any, { type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => mapData.district_ids.includes(x.properties.m_district_id)) }); //
+    // const districtGeoData = feature(districtsJson as any, { type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => mapData.district_ids.includes(x.properties.m_district_id)) }); //
+    const districtGeoData = feature(districtsJson as any, { type: 'GeometryCollection', geometries: (districtsJson as any).objects["India_Districts(733)_Updated(Centroid)"].geometries.filter((x: any) => x.properties.m_state_id == 33).filter((x: any) => !mapData.filters.m_district_id ? true : mapData.filters.m_district_id == x.properties.m_district_id) }); //
     const indiaGeoData = feature(indiaJson as any, (indiaJson as any).objects["India"]);
 
     console.log({ d: mapData.data })
@@ -62,24 +72,26 @@ export default function MapView() {
                     <IconFilter onClick={() => { dispatch(setShowFilters(true)) }} />
                     {/* <IconFilter onClick={() => { setShow(prev => !prev) }} /> */}
                 </Group>
-                <MapContainer center={[21.146633, 79.088860]} zoom={3} minZoom={2} maxZoom={20} scrollWheelZoom={true} style={{ height: "calc(100vh - 120px)", zIndex: 1 }}>
+                <MapContainer
+                    center={[21.146633, 79.088860]}
+                    zoom={initialZoom}
+                    minZoom={2}
+                    maxZoom={20}
+                    scrollWheelZoom={true}
+                    style={{ height: "calc(100vh - 120px)", zIndex: 1 }}
+                >
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                         subdomains="abcd"
                     />
 
-                    {
-                        mapData.loading ?
-                            <GeoJSON key={"india"} data={indiaGeoData} style={{ color: "#000000", weight: 0.3, opacity: 0.9, fillOpacity: 0, fill: false, dashOffset: "1.5" }} />
-                            : <GeoJSON key={"district"} data={districtGeoData} style={{
-                                'color': 'gray'
-                                , 'fillColor': 'white'
-                                , 'weight': 0.5
-                                , 'opacity': 1
-                                , 'fillOpacity': 0.8
-                            }} />
-                    }
+                    <GeoJSON key={"india"} data={indiaGeoData} style={{ color: "#000000", weight: 0.3, opacity: 0.9, fillOpacity: 0, fill: false, dashOffset: "1.5" }} />
+                    <GeoJSON key={mapData.filters.m_district_id} data={districtGeoData} style={{
+                        'color': 'gray',
+                        'fillColor': 'white', 'weight': 0.5, 'opacity': 1, 'fillOpacity': 0.8
+                    }} />
+
 
                     {
                         mapData.data.map((item, i) => {
@@ -122,7 +134,7 @@ export default function MapView() {
                                 position={[item.latitude, item.longitude]}
                                 icon={divIcon({
                                     html: markerSVG(item.type), iconSize: [0, 0],
-                                    iconAnchor: [0, 0]
+                                    iconAnchor: [25, 30]
                                 })}>
                                 {item.type == "survey" ? <SurveyPopUp id={item.id} /> : <FeedbackPopUp id={item.id} />}
                             </Marker>

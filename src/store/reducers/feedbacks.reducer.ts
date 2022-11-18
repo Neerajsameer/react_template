@@ -2,17 +2,16 @@ import { showNotification } from "@mantine/notifications";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import store from "..";
 import { API_URLS } from "../../constants/api_urls";
-import { MasterData } from "../../constants/types";
 import { Request, SessionData } from "../../utils/functions.utils";
 
-type Feedback = {
+export type Feedback = {
   data: {
-    id: number;
     feedback_type: number;
     s_feedback_id: string;
     s_no: number;
     feedback: string;
     added_on: string;
+    added_by: string;
   }[];
   filters: {
     feedback_type?: string | null;
@@ -20,7 +19,7 @@ type Feedback = {
     to_date?: Date | null;
   };
   loading: boolean;
-  feedback_id: number | null;
+  feedback_data: Feedback["data"][0] | null;
 };
 
 const localFeedbackFilters = JSON.parse(SessionData.get("feedback_filters") ?? "{}") as Feedback["filters"];
@@ -30,10 +29,10 @@ const feedbackInitialData: Feedback = {
   loading: false,
   filters: {
     feedback_type: localFeedbackFilters.feedback_type,
-    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : new Date(),
-    to_date: localFeedbackFilters.to_date ? new Date(localFeedbackFilters.to_date) : new Date(),
+    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : new Date(new Date().setDate(new Date().getDate() - 7)),
+    to_date: new Date(),
   },
-  feedback_id: null,
+  feedback_data: null,
 };
 
 export const FeedbacksInitialSlice = createSlice({
@@ -63,13 +62,13 @@ export const FeedbacksInitialSlice = createSlice({
 
       SessionData.set("feedback_filters", JSON.stringify(state.filters));
     },
-    setFeedbackID: (state, action: PayloadAction<number | null>) => {
-      state.feedback_id = action.payload;
+    setFeedbackData: (state, action: PayloadAction<Feedback["data"][0] | null>) => {
+      state.feedback_data = action.payload;
     },
   },
 });
 
-export const { setLoading, resetState, setFeedbacks, setFeedbackFilters, setFeedbackID } = FeedbacksInitialSlice.actions;
+export const { setLoading, resetState, setFeedbacks, setFeedbackFilters, setFeedbackData } = FeedbacksInitialSlice.actions;
 
 export default FeedbacksInitialSlice.reducer;
 
