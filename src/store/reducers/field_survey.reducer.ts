@@ -58,6 +58,9 @@ export const FeedbacksInitialSlice = createSlice({
         ...action.payload,
       };
 
+      if (state.filters.from_date) state.filters.from_date = new Date(state.filters.from_date?.setHours(0, 0, 0, 0));
+      if (state.filters.to_date) state.filters.to_date = new Date(state.filters.to_date?.setHours(23, 59, 59, 999));
+
       state.data = [];
 
       SessionData.set("field_survey_filters", JSON.stringify(state.filters));
@@ -80,7 +83,7 @@ export const getFieldSurveys = () => {
   return async (dispatch: any) => {
     dispatch(setLoading(true));
     try {
-      const fieldSurveyFilters = store.getState().feedbacks.filters;
+      const fieldSurveyFilters = store.getState().field_survey.filters;
       const data = await Request.post({ url: API_URLS.DATA.field_survey, data: fieldSurveyFilters });
       const formattedData = data.map((x: any, i: number) => ({
         s_no: i + 1,

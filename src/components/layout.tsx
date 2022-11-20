@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar";
 
-export default function NLayout({ children, title, backLink }: { children: React.ReactNode, title: string, backLink?: string }) {
+export default function NLayout({ children, title, backLink, noPadding = false }: { children: React.ReactNode, title: string, backLink?: string, noPadding?: boolean }) {
     const [showNav, setShowNav] = useLocalStorage({ key: "show_nav", defaultValue: true });
     const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ export default function NLayout({ children, title, backLink }: { children: React
                     <Text size={20} weight={"bold"}>{title}</Text>
                 </div>
                 <Divider h={10} mx={20} />
-                <div style={{ padding: "10px 30px", height: "100%", overflowY: "scroll" }}>
+                <div style={{ padding: noPadding ? "0px" : "10px 30px", height: "100%", overflowY: "scroll" }}>
                     {children}
 
                 </div>

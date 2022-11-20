@@ -56,11 +56,17 @@ export const getDashboardData = () => {
     dispatch(setLoading(true));
     try {
       if (!store.getState().dashboard.master_data) {
-        const masterData = await Request.get({ url: API_URLS.DATA.master_data });
-        dispatch(setMasterData(masterData));
+        const masterData: MasterData = await Request.get({ url: API_URLS.DATA.master_data });
+        dispatch(
+          setMasterData({
+            ...masterData,
+            m_state: masterData.m_state.sort((a, b) => a.state_name.localeCompare(b.state_name)),
+            m_district: masterData.m_district.sort((a, b) => a.district_name.localeCompare(b.district_name)),
+          })
+        );
 
-        const users = await Request.get({ url: API_URLS.USERS.GET_USERS });
-        dispatch(setAllDeptUsers(users));
+        const users: apiUserData[] = await Request.get({ url: API_URLS.USERS.GET_USERS });
+        dispatch(setAllDeptUsers(users.sort((a, b) => a.name.localeCompare(b.name))));
       }
 
       const response = await Request.get({ url: API_URLS.DATA.dashboard_data });

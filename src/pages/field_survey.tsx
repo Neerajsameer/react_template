@@ -19,6 +19,7 @@ export default function FieldSurvey() {
     const dispatch = useAppDispatch();
     const fieldSurvey = useAppSelector((state) => state.field_survey);
     const masterData = useAppSelector((state) => state.dashboard.master_data);
+    const dept_users = useAppSelector((state) => state.dashboard.dept_users);
     const navigate = useNavigate()
 
     useEffect(() => { dispatch(getFieldSurveys()) }, [fieldSurvey.filters])
@@ -65,6 +66,8 @@ export default function FieldSurvey() {
                     data={masterData.m_department.map((item, i) => ({ label: item, value: i.toString() }))}
                     label="Department"
                     name="m_department_id"
+                    clearable
+                    searchable
                     onChange={(value) => {
                         dispatch(setFieldSurveyFilters({ m_department_id: value as any }))
                     }}
@@ -94,6 +97,17 @@ export default function FieldSurvey() {
                     }}
                     value={(fieldSurvey.filters.m_district_id)?.toString()}
                 />
+                <Select
+                    data={dept_users.filter(x => fieldSurvey.filters.m_department_id ? (x.m_department_id == fieldSurvey.filters.m_department_id) : true).map((item, i) => ({ label: item.name, value: item.id_app_user.toString() }))}
+                    label="User"
+                    name="m_user_id"
+                    searchable
+                    clearable
+                    onChange={(value) => {
+                        dispatch(setFieldSurveyFilters({ m_user_id: value as any }))
+                    }}
+                    value={(fieldSurvey.filters.m_user_id)?.toString()}
+                />
             </Group>
             <div style={{ width: "100%" }}>
                 <NTable
@@ -109,7 +123,7 @@ export default function FieldSurvey() {
                 onClose={() => {
                     dispatch(setFieldSurveyExtraDetails(null))
                 }}
-                title="Photos"
+                title="Field Survey Details"
                 padding="xl"
                 size="90%"
             >

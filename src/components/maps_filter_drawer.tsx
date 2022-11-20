@@ -123,28 +123,31 @@ export function MapFiltersDrawer() {
                     }}
                 />
                 <Space h={20} />
-                <Select
-                    data={masterData.m_department.map((item, i) => ({ label: item, value: i.toString() }))}
-                    label="Department"
-                    name="m_department_id"
-                    searchable
-                    clearable
-                    onChange={(value) => {
-                        dispatch(setMapFilters({ m_department_id: value as any }))
-                    }}
-                    value={(mapData.filters.m_department_id)?.toString()}
-                />
-                <Select
-                    data={users.filter(x => x.m_department_id == mapData.filters.m_department_id).map((item, i) => ({ label: item.name, value: item.id_app_user.toString() }))}
-                    label="User"
-                    name="m_user_id"
-                    searchable
-                    clearable
-                    onChange={(value) => {
-                        dispatch(setMapFilters({ m_user_id: value as any }))
-                    }}
-                    value={(mapData.filters.m_user_id)?.toString()}
-                />
+                {mapData.filters.field_survey ? <>
+                    <Select
+                        data={masterData.m_department.map((item, i) => ({ label: item, value: i.toString() }))}
+                        label="Department"
+                        name="m_department_id"
+                        searchable
+                        clearable
+                        onChange={(value) => {
+                            dispatch(setMapFilters({ m_department_id: value as any }))
+                        }}
+                        value={(mapData.filters.m_department_id)?.toString()}
+                    />
+                    <Select
+                        data={users.filter(x => x.m_department_id == mapData.filters.m_department_id).map((item, i) => ({ label: item.name, value: item.id_app_user.toString() }))}
+                        label="User"
+                        name="m_user_id"
+                        searchable
+                        clearable
+                        onChange={(value) => {
+                            dispatch(setMapFilters({ m_user_id: value as any }))
+                        }}
+                        value={(mapData.filters.m_user_id)?.toString()}
+                    />
+                </> : <></>}
+
                 <Space h={100} />
             </ScrollArea>
         </Drawer>

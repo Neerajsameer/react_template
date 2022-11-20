@@ -61,7 +61,7 @@ export default function MapView() {
     console.log({ d: mapData.data })
     return (
         <>
-            <NLayout title='Map View'>
+            <NLayout title='Map View' noPadding>
                 <link
                     rel="stylesheet"
                     href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"

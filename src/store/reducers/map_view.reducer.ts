@@ -81,6 +81,9 @@ export const MapDataInitialSlice = createSlice({
         ...action.payload,
       };
 
+      if (state.filters.from_date) state.filters.from_date = new Date(state.filters.from_date?.setHours(0, 0, 0, 0));
+      if (state.filters.to_date) state.filters.to_date = new Date(state.filters.to_date?.setHours(23, 59, 59, 999));
+
       state.data = [];
 
       SessionData.set("map_filters", JSON.stringify(state.filters));
