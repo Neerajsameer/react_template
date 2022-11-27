@@ -14,6 +14,8 @@ type initialStateType = {
     email: string;
     phone_number: string;
     access_token: string | null;
+    m_state_id: number;
+    m_district_id: number[];
     permission: [];
   } | null;
 };
@@ -55,6 +57,39 @@ export const loginReqAuthentication = (email: string, password: string) => {
       dispatch(setLoading(false));
 
       dispatch(login(response));
+      return response;
+    } catch (e) {
+      throw e;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+};
+
+export const sendOTP = (email: string) => {
+  return async (dispatch: any) => {
+    dispatch(setLoading(true));
+    try {
+      if (!email) throw "Please enter email";
+      const response = await Request.post({ url: API_URLS.SEND_OTP, data: { email, email_type: "dep_app_user" } });
+      dispatch(setLoading(false));
+
+      return response;
+    } catch (e) {
+      throw e;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+};
+
+export const changePassword = (email: string, password: string, otp: string) => {
+  return async (dispatch: any) => {
+    dispatch(setLoading(true));
+    try {
+      if (!email) throw "Please enter email";
+      const response = await Request.post({ url: API_URLS.RESET_PASSWORD, data: { email, password, otp } });
+      dispatch(setLoading(false));
       return response;
     } catch (e) {
       throw e;

@@ -48,6 +48,7 @@ type PeakHours = {
 export type FieldSurveyDataType = {
   f_survey_general_details: {
     repr_name?: string;
+    added_on: string;
     m_designation_id?: number;
     m_department_id?: number;
     phone_number?: string;
@@ -133,5 +134,11 @@ export type FieldSurveyDataType = {
     m_road_user_violations_other?: string;
     m_user_violation_enforcement_solutions_id?: number[];
     m_user_violation_enforcement_solutions_other?: string;
+  };
+  user_data: {
+    email: string;
+    id_app_user: number;
+    name: string;
+    phone_number: string;
   };
 };

@@ -10,6 +10,7 @@ export type Feedback = {
     s_feedback_id: string;
     s_no: number;
     feedback: string;
+    comment: string;
     added_on: string;
     added_by: string;
   }[];
@@ -29,7 +30,9 @@ const feedbackInitialData: Feedback = {
   loading: false,
   filters: {
     feedback_type: localFeedbackFilters.feedback_type,
-    from_date: localFeedbackFilters.from_date ? new Date(localFeedbackFilters.from_date) : new Date(new Date().setDate(new Date().getDate() - 7)),
+    from_date: localFeedbackFilters.from_date
+      ? new Date(localFeedbackFilters.from_date)
+      : new Date(new Date().setDate(new Date().getDate() - 7)),
     to_date: new Date(),
   },
   feedback_data: null,
@@ -68,7 +71,8 @@ export const FeedbacksInitialSlice = createSlice({
   },
 });
 
-export const { setLoading, resetState, setFeedbacks, setFeedbackFilters, setFeedbackData } = FeedbacksInitialSlice.actions;
+export const { setLoading, resetState, setFeedbacks, setFeedbackFilters, setFeedbackData } =
+  FeedbacksInitialSlice.actions;
 
 export default FeedbacksInitialSlice.reducer;
 
@@ -83,7 +87,9 @@ export const getFeedbacks = () => {
         ...x,
         s_no: i + 1,
         feedback:
-          x["feedback_type"] == 1 ? masterData.m_bad_road_type_list[x["m_feedback_id"]] : masterData.m_good_road_type_list[x["m_feedback_id"]],
+          x["feedback_type"] == 1
+            ? masterData.m_bad_road_type_list[x["m_feedback_id"]]
+            : masterData.m_good_road_type_list[x["m_feedback_id"]],
         more: true,
       }));
 
