@@ -1,5 +1,5 @@
 export const API_URLS = {
-  BASE_URL: "http://127.0.0.1:8082", //"http://68.178.163.212:8082"
+  BASE_URL: "http://68.178.163.212:8082", // "http://127.0.0.1:8082"
   LOGIN: "/department/login",
   SEND_OTP: "/get_otp",
   RESET_PASSWORD: "/reset_password",
