@@ -20,25 +20,9 @@ export default function Login() {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <Grid columns={6} style={{ height: "100%" }} p={0} m={0}>
-        <Grid.Col sm={6} md={4}>
-          {isVisible ? null : (
-            <img src={AppImages.loginBG} alt="" width={"100%"} height={"90%"} style={{ objectFit: "cover" }} />
-          )}
-        </Grid.Col>
         <Grid.Col sm={6} md={2}>
           <Center style={{ height: "100%" }}>
             <Stack spacing={10} style={{ background: "white", boxShadow: "1px 1px 10px -1px grey" }}>
-              <Stack style={{ background: "#F0AA3C" }} p={10} spacing={0}>
-                <Title order={3} ta="center">
-                  Road Safety Survey and Audit
-                </Title>
-                <Text ta="center">(RSSA)</Text>
-              </Stack>
-
-              <Group position="center" mt={20} spacing={20}>
-                <img height={100} src={AppImages.morthLogo} alt="" />
-                <img height={100} src={AppImages.rgbLogo} alt="" />
-              </Group>
               <Stack px={30} py={10}>
                 {forgotPassword ? (
                   <Stack>
@@ -112,6 +96,9 @@ export default function Login() {
                   </Stack>
                 ) : (
                   <Stack>
+                    <Text weight={"bold"} size={30}>
+                      Welcome
+                    </Text>
                     <NTextBox
                       label="Email"
                       placeholder="Email Address"
@@ -146,10 +133,6 @@ export default function Login() {
                     />
                   </Stack>
                 )}
-
-                <Group position="center" mt={20}>
-                  <img height={80} src={AppImages.logo} alt="" />
-                </Group>
               </Stack>
             </Stack>
           </Center>

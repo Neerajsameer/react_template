@@ -1,11 +1,10 @@
 import { Drawer, Group, Text } from "@mantine/core";
-import { closeAllModals, openConfirmModal } from "@mantine/modals";
+import { openConfirmModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
 import { IconEdit, IconTrash } from "@tabler/icons";
 import { ColumnType } from "antd/lib/table";
 import moment from "moment";
 import { useEffect } from "react";
-import AddNewUserDrawer from "../components/add_user_drawer";
 import NLayout from "../components/layout";
 import NTable from "../components/Table/table";
 import NButton from "../framework/NButton";
@@ -15,7 +14,7 @@ import { apiUserData, deleteUser, getUsers, setShowAddUserModal } from "../store
 export default function Users() {
   const dispatch = useAppDispatch();
   const users = useAppSelector((state) => state.users);
-  const masterData = useAppSelector((state) => state.dashboard.master_data);
+  const masterData = useAppSelector((state) => state.dashboard.initial_data);
 
   useEffect(() => {
     dispatch(getUsers());
@@ -49,42 +48,11 @@ export default function Users() {
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone Number", dataIndex: "phone_number", key: "phone_number" },
     {
-      title: "State",
-      dataIndex: "m_state_id",
-      key: "m_state_id",
-      render: (value: any) => <>{masterData.m_state.find((x) => value == x.m_state_id)?.state_name}</>,
-    },
-    {
-      title: "Districts",
-      dataIndex: "m_district_id",
-      key: "m_district_id",
-      render: (value: any) => (
-        <>
-          {value
-            .map((district_id: any) => masterData.m_district.find((x) => x.m_district_id == district_id)?.district_name)
-            .join(", ")}
-        </>
-      ),
-    },
-    {
-      title: "User Type",
-      dataIndex: "m_user_type_id",
-      key: "m_user_type_id",
-      render: (value: any) => <>{masterData.m_user_types[value]}</>,
-    },
-    {
       title: "Designation",
       dataIndex: "m_designation_id",
       key: "m_designation_id",
       render: (value: any) => <>{masterData.m_designation[value]}</>,
     },
-    {
-      title: "Department",
-      dataIndex: "m_department_id",
-      key: "m_department_id",
-      render: (value: any) => <>{masterData.m_department[value]}</>,
-    },
-
     {
       fixed: "right",
       title: "Actions",
@@ -120,9 +88,7 @@ export default function Users() {
           opened={!!users.show_add_user_modal}
           title="Add New User"
           styles={{ title: { fontWeight: 600 } }}
-        >
-          <AddNewUserDrawer />
-        </Drawer>
+        ></Drawer>
       </NLayout>
     </>
   );

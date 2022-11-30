@@ -1,22 +1,16 @@
 export const API_URLS = {
-  BASE_URL: "http://68.178.163.212:8082", // "http://127.0.0.1:8082"
-  LOGIN: "/department/login",
+  BASE_URL: "http://your_api_url",
+  LOGIN: "/login",
   SEND_OTP: "/get_otp",
   RESET_PASSWORD: "/reset_password",
   USERS: {
-    GET_USERS: "/department/users",
-    CREATE_USER: "/department/signup",
-    DELETE_USER: (id: number) => `/department/users/${id}`,
-    UPDATE_USER: (id: number) => `/department/users/${id}`,
+    GET_USERS: "/user",
+    CREATE_USER: "/user",
+    DELETE_USER: (id: number) => `/user/${id}`,
+    UPDATE_USER: (id: number) => `/user/${id}`,
   },
   DATA: {
-    feedbacks: "/feedback_data",
-    field_survey: "/survey_data",
-    master_data: "/master_data",
-    map_data: "/map_data",
-    dashboard_data: "/dashboard_data",
-    feedback_images: (id: number) => `/feedback_images/${id}`,
-    get_feedback: (id: number) => `/feedback/${id}`,
-    get_field_survey: (id: number) => `/survey/${id}`,
+    initial_data: "/initial_data",
+    dashboard_data: "/dashboard",
   },
 };

@@ -1,6 +1,6 @@
 import { Divider, Text } from "@mantine/core";
-import { IconChevronsLeft, IconDashboard, IconFileShredder, IconLogout, IconMap, IconUsers } from "@tabler/icons";
-import { useEffect, useState } from "react";
+import { IconChevronsLeft, IconDashboard, IconLogout, IconUsers } from "@tabler/icons";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppImages } from "../constants/app_images";
 import store, { useAppDispatch, useAppSelector } from "../store";
@@ -9,15 +9,12 @@ import { logout } from "../store/reducers/Auth.reducers";
 const navItems = [
   { link: "/", label: "Dashboard", icon: IconDashboard },
   { link: "/users", label: "Users", icon: IconUsers },
-  { link: "/feedbacks", label: "Citizen Feedbacks", icon: IconFileShredder },
-  { link: "/field_survey", label: "Field Survey", icon: IconFileShredder },
-  { link: "/map_view", label: "Map View", icon: IconMap },
 ];
 
 export default function Navbar({ onClose }: { onClose: any }) {
-  const [active, setActive] = useState(window.location.pathname);
+  const [active] = useState(window.location.pathname);
   const auth = useAppSelector((state) => state.auth);
-  const masterData = useAppSelector((state) => state.dashboard.master_data);
+  const masterData = useAppSelector((state) => state.dashboard.initial_data);
   const dispatch = useAppDispatch();
   let navigate = useNavigate();
 
@@ -27,25 +24,17 @@ export default function Navbar({ onClose }: { onClose: any }) {
         <div style={{ display: "flex", gap: "5px" }}>
           <img src={AppImages.logo} height={40} alt="fg" />
           <Text size={24} weight={600}>
-            RSSA
+            ABC
           </Text>
         </div>
         <IconChevronsLeft onClick={onClose} />
       </div>
       <Divider my={10} />
       <div className="nav-links">
-        {!store.getState().dashboard.master_data
+        {!store.getState().dashboard.initial_data
           ? null
           : navItems.map((item, i) => (
-              <div
-                key={i}
-                onClick={(event) => {
-                  // setActive(item.link);
-                  // event.preventDefault();
-                  // window.location.replace(item.link);
-                  navigate(item.link, { replace: true });
-                }}
-              >
+              <div key={i} onClick={(event) => navigate(item.link, { replace: true })}>
                 <div key={i} className={`nav-item ${item.link === active ? "active" : ""}`}>
                   <item.icon stroke={1.5} />
                   <span>{item.label}</span>
@@ -54,21 +43,12 @@ export default function Navbar({ onClose }: { onClose: any }) {
               </div>
             ))}
       </div>
-      <Text lineClamp={1} size={12} weight={400}>
-        ● State: {masterData?.m_state.find((x) => x.m_state_id === auth.data?.m_state_id)?.state_name}
-      </Text>
-      <Text lineClamp={1} size={12} weight={400}>
-        ● District:{" "}
-        {masterData?.m_district
-          .filter((x) => auth.data?.m_district_id.includes(x.m_district_id))
-          .map((x) => x.district_name)
-          .join(", ")}
-      </Text>
+
       <Divider my={10} />
       <div className="user-card">
         <div>
           <Text lineClamp={1} size={14} weight={600}>
-            {auth.data?.user_name}
+            {auth.data?.name}
           </Text>
           <Text lineClamp={1} size={12} weight={400}>
             {auth.data?.email}

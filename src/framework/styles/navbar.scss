@@ -38,16 +38,16 @@
       background-color: transparent;
       cursor: pointer;
       text-decoration: none;
-      color: red; //$primary-color;
+      color: black; //$primary-color;
       font-weight: 600;
       font-size: 17px;
 
       &:hover {
-        background-color: #f36a2f4a;
+        background-color: #e5e5e54a;
       }
 
       &.active {
-        background-color: #f36a2f4a;
+        background-color: #47edc64a;
         // color: white;
       }
     }

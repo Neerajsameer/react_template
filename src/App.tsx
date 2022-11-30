@@ -16,7 +16,7 @@ function App() {
       withGlobalStyles
       theme={{
         fontFamily: "Mulish",
-        primaryColor: "orange",
+        primaryColor: "blue",
         components: {
           Modal: {
             styles: {

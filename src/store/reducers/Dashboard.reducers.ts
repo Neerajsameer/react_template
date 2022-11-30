@@ -8,23 +8,17 @@ import { apiUserData } from "./users.reducer";
 type initialStateType = {
   loading: boolean;
   data: {
-    appreciation_feedback_count: number;
-    complaint_feedback_count: number;
-    department_user_count: number;
-    field_survey_count: number;
+    permissions: string[];
   } | null;
-  master_data: MasterData;
-  dept_users: apiUserData[];
+  initial_data: MasterData;
 };
 
-const localMasterData = SessionData.get("master_data");
-const localDeptUsers = SessionData.get("dept_users");
+const localMasterData = SessionData.get("initial_data");
 
 const initialState: initialStateType = {
   loading: false,
   data: null,
-  master_data: localMasterData ? JSON.parse(localMasterData) : null,
-  dept_users: localDeptUsers ? JSON.parse(localDeptUsers) : [],
+  initial_data: localMasterData ? JSON.parse(localMasterData) : null,
 };
 
 export const DashboardReducer = createSlice({
@@ -37,36 +31,23 @@ export const DashboardReducer = createSlice({
     setDashboardData: (state, action: PayloadAction<initialStateType["data"]>) => {
       state.data = action.payload;
     },
-    setMasterData: (state, action: PayloadAction<MasterData>) => {
-      state.master_data = action.payload;
-      SessionData.set("master_data", JSON.stringify(action.payload));
-    },
-    setAllDeptUsers: (state, action: PayloadAction<apiUserData[]>) => {
-      state.dept_users = action.payload;
-      SessionData.set("dept_users", JSON.stringify(action.payload));
+    setInitialData: (state, action: PayloadAction<MasterData>) => {
+      state.initial_data = action.payload;
+      SessionData.set("initial_data", JSON.stringify(action.payload));
     },
   },
   extraReducers: {},
 });
 
-export const { setLoading, setDashboardData, setMasterData, setAllDeptUsers } = DashboardReducer.actions;
+export const { setLoading, setDashboardData, setInitialData } = DashboardReducer.actions;
 
 export const getDashboardData = () => {
   return async (dispatch: any) => {
     dispatch(setLoading(true));
     try {
-      if (!store.getState().dashboard.master_data) {
-        const masterData: MasterData = await Request.get({ url: API_URLS.DATA.master_data });
-        dispatch(
-          setMasterData({
-            ...masterData,
-            m_state: masterData.m_state.sort((a, b) => a.state_name.localeCompare(b.state_name)),
-            m_district: masterData.m_district.sort((a, b) => a.district_name.localeCompare(b.district_name)),
-          })
-        );
-
-        const users: apiUserData[] = await Request.get({ url: API_URLS.USERS.GET_USERS });
-        dispatch(setAllDeptUsers(users.sort((a, b) => a.name.localeCompare(b.name))));
+      if (!store.getState().dashboard.initial_data) {
+        const masterData: MasterData = await Request.get({ url: API_URLS.DATA.initial_data });
+        dispatch(setInitialData(masterData));
       }
 
       const response = await Request.get({ url: API_URLS.DATA.dashboard_data });

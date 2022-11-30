@@ -5,11 +5,7 @@ import { Navigate, Route, Routes, useLocation, BrowserRouter, Router, HashRouter
 import Dashboard from "./pages/dashboard";
 import Login from "./pages/login";
 import Users from "./pages/users";
-import MapView from "./pages/map_view";
-import Feedbacks from "./pages/feedbacks";
 import { useAppSelector } from "./store";
-import FieldSurvey from "./pages/field_survey";
-import FieldSurveyData from "./pages/field_survey_data";
 //import Projects from "./pages/Projects";
 //import SearchResults from "./pages/SearchResults";
 //import AuthLayout from "./pages/AuthLayout";
@@ -19,9 +15,7 @@ import FieldSurveyData from "./pages/field_survey_data";
 // const Login = lazy(() => import("./pages/login"));
 // const Feedbacks = lazy(() => import("./pages/feedbacks"));
 
-
 const RoutePathComponent = () => {
-
   const pageVariants = {
     initial: {
       opacity: 0,
@@ -46,15 +40,31 @@ const RoutePathComponent = () => {
     <AnimatePresence>
       <Suspense>
         <motion.div initial="initial" exit="out" variants={pageVariants} animate="in" transition={pageTransition}>
-
-          <Routes  >
-            <Route path="/" element={<RequiredAuth><Dashboard /></RequiredAuth>} />
-            <Route path="/login" element={<AlreadyLoggedIn><Login /></AlreadyLoggedIn>} />
-            <Route path="/users" element={<RequiredAuth><Users /></RequiredAuth>} />
-            <Route path="/map_view" element={<RequiredAuth><MapView /></RequiredAuth>} />
-            <Route path="/feedbacks" element={<RequiredAuth><Feedbacks /></RequiredAuth>} />
-            <Route path="/field_survey" element={<RequiredAuth><FieldSurvey /></RequiredAuth>} />
-            <Route path="/field_survey_data" element={<RequiredAuth><FieldSurveyData /></RequiredAuth>} />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <RequiredAuth>
+                  <Dashboard />
+                </RequiredAuth>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <AlreadyLoggedIn>
+                  <Login />
+                </AlreadyLoggedIn>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <RequiredAuth>
+                  <Users />
+                </RequiredAuth>
+              }
+            />
             <Route path="*" element={<>404</>} />
           </Routes>
         </motion.div>
@@ -68,7 +78,6 @@ function RequiredAuth({ children }: any) {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const location = useLocation();
 
-
   if (!isLoggedIn) return <Navigate to="/login" state={{ from: location }} replace />;
   return children;
 }
@@ -76,7 +85,6 @@ function RequiredAuth({ children }: any) {
 function AlreadyLoggedIn({ children }: any) {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const location = useLocation();
-
 
   if (isLoggedIn) return <Navigate to="/" state={{ from: location }} replace />;
   return children;

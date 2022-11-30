@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import store from "..";
 import { API_URLS } from "../../constants/api_urls";
-import { MasterData } from "../../constants/types";
 import { Request, SessionData } from "../../utils/functions.utils";
 
 const user = SessionData.get("user");
@@ -10,7 +8,7 @@ type initialStateType = {
   loading: boolean;
   isLoggedIn: boolean;
   data: {
-    user_name: string;
+    name: string;
     email: string;
     phone_number: string;
     access_token: string | null;

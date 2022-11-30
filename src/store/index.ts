@@ -2,19 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
 import AuthReducer from "./reducers/Auth.reducers";
 import UsersReducer from "./reducers/users.reducer";
-import FeedbacksReducer from "./reducers/feedbacks.reducer";
-import MapViewReducer from "./reducers/map_view.reducer";
 import DashboardReducer from "./reducers/Dashboard.reducers";
-import FieldSurveyReducer from "./reducers/field_survey.reducer";
 
 const store = configureStore({
   reducer: {
     auth: AuthReducer,
     users: UsersReducer,
-    feedbacks: FeedbacksReducer,
-    map_view: MapViewReducer,
     dashboard: DashboardReducer,
-    field_survey: FieldSurveyReducer,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
